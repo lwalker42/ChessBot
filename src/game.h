@@ -10,6 +10,6 @@ using namespace std;
 
 extern Piece board[BOARD_SIZE][BOARD_SIZE]; 
 
-void printBoard();
+void print_board();
 
 #endif

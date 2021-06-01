@@ -5,8 +5,6 @@
 using namespace std; 
 
 int main () {
-    cout << 3 << endl << "\n";
-    printf("asdf\n");
-    printBoard();
+    print_board();
     return 0;
 }

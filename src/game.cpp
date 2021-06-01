@@ -14,11 +14,11 @@ Piece board[BOARD_SIZE][BOARD_SIZE] = {{rook, knight, bishop, queen, king, bisho
                                        {rook, knight, bishop, queen, king, bishop, knight, rook}};
 
 
-void printBoard() {
+void print_board() {
     cout << endl;
     for(int i = 0; i < BOARD_SIZE; i++) {
         for(int j = 0; j < BOARD_SIZE; j++) {
-            cout << toString(board[i][j]);
+            cout << to_string(board[i][j]);
         }
         cout << endl;
     }

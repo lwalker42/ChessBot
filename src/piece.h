@@ -13,6 +13,6 @@ enum Piece {
     pawn
 };
 
-char toString(Piece);
+char to_string(Piece);
 
 #endif
