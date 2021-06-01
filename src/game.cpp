@@ -4,6 +4,15 @@
 
 using namespace std;
 
+Piece board[BOARD_SIZE][BOARD_SIZE] = {{rook, knight, bishop, queen, king, bishop, knight, rook},
+                                       {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn},
+                                       {empty, empty, empty, empty, empty, empty, empty, empty},
+                                       {empty, empty, empty, empty, empty, empty, empty, empty},
+                                       {empty, empty, empty, empty, empty, empty, empty, empty},
+                                       {empty, empty, empty, empty, empty, empty, empty, empty},
+                                       {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn},
+                                       {rook, knight, bishop, queen, king, bishop, knight, rook}};
+
 
 void printBoard() {
     cout << endl;
