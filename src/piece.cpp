@@ -5,7 +5,7 @@
 using namespace std; 
 
 
-char toString(P iece p) {
+char toString(Piece p) {
     switch(p) {
         case king:
         return 'K';
