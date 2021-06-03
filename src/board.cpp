@@ -1,6 +1,7 @@
 #include <iostream>
 #include "piece.h"
 #include "board.h"
+#include "util.h"
 
 using namespace std;
 
@@ -28,4 +29,16 @@ void Board::print_board() {
         }
         cout << endl;
     }
+}
+
+Piece Board::move_piece(int r1, int c1, int r2, int c2) {
+    if (!on_board(r1, c1)) return _;
+
+    Piece p = board[r1][c1];
+    if (p == _) return _;
+    board[r1][c1] = _;
+    if (on_board(r2, c2)) {
+        board[r2][c2] = p;
+    }
+    return p;
 }
