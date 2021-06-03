@@ -1,6 +1,6 @@
 #include <iostream>
 #include "piece.h"
-#include "game.h"
+#include "board.h"
 
 using namespace std;
 
