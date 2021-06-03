@@ -3,17 +3,17 @@
 
 #include "piece.h"
 
-using namespace std;
-
 #define BOARD_SIZE 8
 
 
 
 class Board {
+    public:
     Piece board[BOARD_SIZE][BOARD_SIZE];
     
     public:
         Board();
+        Board(Board&);
         void print_board();
 };
 

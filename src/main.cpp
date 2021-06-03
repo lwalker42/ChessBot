@@ -6,7 +6,8 @@ using namespace std;
 
 int main () {
     Board board;
+    Board board2(board);
     board.print_board();
-    board.print_board();
+    board2.print_board();
     return 0;
 }

@@ -22,6 +22,14 @@ Board::Board() {
     }
 }
 
+Board::Board(Board &b) {
+    for(int i = 0; i < BOARD_SIZE; i++) {
+        for(int j = 0; j < BOARD_SIZE; j++) {
+            board[i][j] = b.board[i][j];
+        }
+    }
+}
+
 void Board::print_board() {
     cout << endl;
     for(int i = 0; i < BOARD_SIZE; i++) {

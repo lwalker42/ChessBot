@@ -1,8 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-using namespace std;
-
 enum Piece {
     _,
     K, Q, R, B, N, P, 
