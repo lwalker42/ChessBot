@@ -5,20 +5,32 @@
 using namespace std; 
 
 
-char to_string(Piece p) {
-    switch(p) {
-        case king:
+char to_char(Piece piece) {
+    switch(piece) {
+        case K:
         return 'K';
-        case queen:
+        case Q:
         return 'Q';
-        case rook:
+        case R:
         return 'R';
-        case bishop:
+        case B:
         return 'B';
-        case knight:
+        case N:
         return 'N';
-        case pawn:
+        case P:
         return 'P';
+        case k:
+        return 'k';
+        case q:
+        return 'q';
+        case r:
+        return 'r';
+        case b:
+        return 'b';
+        case n:
+        return 'n';
+        case p:
+        return 'p';
         default:
         return '-';
     }

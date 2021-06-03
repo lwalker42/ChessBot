@@ -4,15 +4,12 @@
 using namespace std;
 
 enum Piece {
-    empty,
-    king,
-    queen,
-    rook,
-    bishop,
-    knight,
-    pawn
+    _,
+    K, Q, R, B, N, P, 
+    k, q, r, b, n, p
 };
 
-char to_string(Piece);
+char to_char(Piece);
+//string to_string(Piece);
 
 #endif
