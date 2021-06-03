@@ -5,6 +5,8 @@
 using namespace std; 
 
 int main () {
-    print_board();
+    Board board;
+    board.print_board();
+    board.print_board();
     return 0;
 }

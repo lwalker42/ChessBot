@@ -8,8 +8,13 @@ using namespace std;
 #define BOARD_SIZE 8
 
 
-extern Piece board[BOARD_SIZE][BOARD_SIZE]; 
 
-void print_board();
+class Board {
+    Piece board[BOARD_SIZE][BOARD_SIZE];
+    
+    public:
+        Board();
+        void print_board();
+};
 
 #endif
