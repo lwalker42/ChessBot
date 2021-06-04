@@ -4,8 +4,6 @@
 #include "board_constants.h"
 #include "piece.h"
 
-
-
 class Board {
     Piece board[BOARD_SIZE][BOARD_SIZE];
     
