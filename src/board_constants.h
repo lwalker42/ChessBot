@@ -47,5 +47,4 @@ const Move pawn_first_moves[] = {Move(0, -1), Move(0, -2)};
 const Move pawn_moves[] = {Move(0, -1)};
 const Move pawn_capture_moves[] = {Move(1, -1), Move(-1, -1)};
 
-
 #endif

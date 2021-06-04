@@ -1,3 +1,5 @@
+
+
 {
     "version": "2.0.0",
     "tasks": [
@@ -5,13 +7,45 @@
         "type": "shell",
         "label": "g++ build main",
         "command": "/usr/bin/g++",
-        "args": ["-g", "${workspaceFolder}/src/*.cpp", "-o", "${workspaceFolder}/main"],
+        "args": [
+          "-g",
+          "${workspaceFolder}/src/*.cpp",
+          "-o",
+          "${workspaceFolder}/bin/main"
+        ],
         "options": {
           "cwd": "/usr/bin"
         },
-        "problemMatcher": ["$gcc"],
+        "problemMatcher": [
+          "$gcc"
+        ],
         "group": {
           "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "type": "shell",
+        "label": "g++ test suite",
+        "command": "/usr/bin/g++",
+        "args": [
+          "-g",
+          "${workspaceFolder}/src/board.cpp",
+          "${workspaceFolder}/src/game.cpp",
+          "${workspaceFolder}/src/piece.cpp",
+          "${workspaceFolder}/src/util.cpp",
+          "${workspaceFolder}/test/*.cpp",
+          "-o",
+          "${workspaceFolder}/bin/test"
+        ],
+        "options": {
+          "cwd": "/usr/bin"
+        },
+        "problemMatcher": [
+          "$gcc"
+        ],
+        "group": {
+          "kind": "test",
           "isDefault": true
         }
       }
