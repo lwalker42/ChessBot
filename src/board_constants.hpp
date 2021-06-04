@@ -18,17 +18,35 @@ const board_t init_board = {{{r, n, b, q, k, b, n, r},
                             {P, P, P, P, P, P, P, P},
                             {R, N, B, Q, K, B, N, R}}};
 
-const Move diag_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
-                           Move(5, 5), Move(6, 6), Move(7, 7),
-                           Move(-1, -1), Move(-2, -2), Move(-3, -3), Move(-4, -4),
-                           Move(-5, -5), Move(-6, -6), Move(-7, -7),
-                           Move(1, -1), Move(2, -2), Move(3, -3), Move(4, -4),
-                           Move(5, -5), Move(6, -6), Move(7, -7),
-                           Move(-1, 1), Move(-2, 2), Move(-3, 3), Move(-4, 4),
-                           Move(-5, 5), Move(-6, 6), Move(-7, 7)
+const Move bishop_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
+                             Move(5, 5), Move(6, 6), Move(7, 7),
+                             Move(-1, -1), Move(-2, -2), Move(-3, -3), Move(-4, -4),
+                             Move(-5, -5), Move(-6, -6), Move(-7, -7),
+                             Move(1, -1), Move(2, -2), Move(3, -3), Move(4, -4),
+                             Move(5, -5), Move(6, -6), Move(7, -7),
+                             Move(-1, 1), Move(-2, 2), Move(-3, 3), Move(-4, 4),
+                             Move(-5, 5), Move(-6, 6), Move(-7, 7)
+                            };
+
+const Move rook_moves[] = {Move(1, 0), Move(2, 0), Move(3, 0), Move(4, 0), 
+                           Move(5, 0), Move(6, 0), Move(7, 0),
+                           Move(-1, 0), Move(-2, 0), Move(-3, 0), Move(-4, 0), 
+                           Move(-5, 0), Move(-6, 0), Move(-7, 0),
+                           Move(0, 1), Move(0, 2), Move(0, 3), Move(0, 4),
+                           Move(0, 5), Move(0, 6), Move(0, 7),
+                           Move(0, -1), Move(0, -2), Move(0, -3), Move(0, -4),
+                           Move(0, -5), Move(0, -6), Move(0, -7)
                           };
 
-const Move ortho_moves[] = {Move(1, 0), Move(2, 0), Move(3, 0), Move(4, 0), 
+const Move queen_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
+                            Move(5, 5), Move(6, 6), Move(7, 7),
+                            Move(-1, -1), Move(-2, -2), Move(-3, -3), Move(-4, -4),
+                            Move(-5, -5), Move(-6, -6), Move(-7, -7),
+                            Move(1, -1), Move(2, -2), Move(3, -3), Move(4, -4),
+                            Move(5, -5), Move(6, -6), Move(7, -7),
+                            Move(-1, 1), Move(-2, 2), Move(-3, 3), Move(-4, 4),
+                            Move(-5, 5), Move(-6, 6), Move(-7, 7),
+                            Move(1, 0), Move(2, 0), Move(3, 0), Move(4, 0), 
                             Move(5, 0), Move(6, 0), Move(7, 0),
                             Move(-1, 0), Move(-2, 0), Move(-3, 0), Move(-4, 0), 
                             Move(-5, 0), Move(-6, 0), Move(-7, 0),
