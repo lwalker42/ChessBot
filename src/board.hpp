@@ -1,8 +1,8 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
-#include "board_constants.h"
-#include "piece.h"
+#include "board_constants.hpp"
+#include "piece.hpp"
 
 class Board {
     Piece board[BOARD_SIZE][BOARD_SIZE];

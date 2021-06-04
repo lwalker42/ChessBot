@@ -1,7 +1,7 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAME_HPP
+#define GAME_HPP
 
-#include "board.h"
+#include "board.hpp"
 
 class Game {
     private:

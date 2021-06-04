@@ -1,8 +1,8 @@
 #include <iostream>
-#include "piece.h"
-#include "board_constants.h"
-#include "board.h"
-#include "util.h"
+#include "piece.hpp"
+#include "board_constants.hpp"
+#include "board.hpp"
+#include "util.hpp"
 
 using namespace std;
 

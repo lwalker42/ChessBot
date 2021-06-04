@@ -1,8 +1,8 @@
-#ifndef BOARD_CONSTANTS_H
-#define BOARD_CONSTANTS_H
+#ifndef BOARD_CONSTANTS_HPP
+#define BOARD_CONSTANTS_HPP
 
-#include "piece.h"
-#include "move.h"
+#include "piece.hpp"
+#include "move.hpp"
 
 #define BOARD_SIZE 8
 
