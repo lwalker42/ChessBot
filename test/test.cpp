@@ -26,6 +26,14 @@ const board_t test_board = {{{_, b, q, k, b, n, r, n},
                              {_, _, _, _, _, _, _, _},
                              {P, P, P, P, P, P, _, P},
                              {_, _, _, _, _, _, _, _}}};
+const board_t verify_init_board = {{{r, n, b, q, k, b, n, r},
+                                    {p, p, p, p, p, p, p, p},
+                                    {_, _, _, _, _, _, _, _},
+                                    {_, _, _, _, _, _, _, _},
+                                    {_, _, _, _, _, _, _, _},
+                                    {_, _, _, _, _, _, _, _},
+                                    {P, P, P, P, P, P, P, P},
+                                    {R, N, B, Q, K, B, N, R}}};
 
 TEST_CASE("Moving pieces on the board") {
     Board board;
@@ -37,4 +45,6 @@ TEST_CASE("Moving pieces on the board") {
         board.move_piece(BOARD_SIZE-1, BOARD_SIZE-1-i, 2, BOARD_SIZE-i);
     }
     REQUIRE(board.get_board() == test_board);
+    REQUIRE(board.get_board() != init_board); //Make sure a deep copy is made during initialization
+    REQUIRE(init_board == verify_init_board);
 }
