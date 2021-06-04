@@ -1,5 +1,6 @@
 #include <iostream>
 #include "piece.h"
+#include "board_constants.h"
 #include "board.h"
 #include "util.h"
 
