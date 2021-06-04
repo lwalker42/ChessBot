@@ -1,6 +1,9 @@
 #ifndef MOVE_HPP
 #define MOVE_HPP
 
+struct Move;
+typedef Move M;
+
 struct Move {
     int r, c;
     

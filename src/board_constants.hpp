@@ -2,12 +2,14 @@
 #define BOARD_CONSTANTS_HPP
 
 #include <array>
+#include <vector>
 #include "piece.hpp"
 #include "move.hpp"
 
 #define BOARD_SIZE 8
 
 typedef std::array<std::array<Piece, BOARD_SIZE>, BOARD_SIZE> board_t;
+typedef std::vector<Move> moves_t;
 
 const board_t init_board = {{{r, n, b, q, k, b, n, r},
                             {p, p, p, p, p, p, p, p},
@@ -18,54 +20,54 @@ const board_t init_board = {{{r, n, b, q, k, b, n, r},
                             {P, P, P, P, P, P, P, P},
                             {R, N, B, Q, K, B, N, R}}};
 
-const Move bishop_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
-                             Move(5, 5), Move(6, 6), Move(7, 7),
-                             Move(-1, -1), Move(-2, -2), Move(-3, -3), Move(-4, -4),
-                             Move(-5, -5), Move(-6, -6), Move(-7, -7),
-                             Move(1, -1), Move(2, -2), Move(3, -3), Move(4, -4),
-                             Move(5, -5), Move(6, -6), Move(7, -7),
-                             Move(-1, 1), Move(-2, 2), Move(-3, 3), Move(-4, 4),
-                             Move(-5, 5), Move(-6, 6), Move(-7, 7)
-                            };
+const moves_t bishop_moves = {M(1, 1), M(2, 2), M(3, 3), M(4, 4),
+                              M(5, 5), M(6, 6), M(7, 7),
+                              M(-1, -1), M(-2, -2), M(-3, -3), M(-4, -4),
+                              M(-5, -5), M(-6, -6), M(-7, -7),
+                              M(1, -1), M(2, -2), M(3, -3), M(4, -4),
+                              M(5, -5), M(6, -6), M(7, -7),
+                              M(-1, 1), M(-2, 2), M(-3, 3), M(-4, 4),
+                              M(-5, 5), M(-6, 6), M(-7, 7)
+                             };
 
-const Move rook_moves[] = {Move(1, 0), Move(2, 0), Move(3, 0), Move(4, 0), 
-                           Move(5, 0), Move(6, 0), Move(7, 0),
-                           Move(-1, 0), Move(-2, 0), Move(-3, 0), Move(-4, 0), 
-                           Move(-5, 0), Move(-6, 0), Move(-7, 0),
-                           Move(0, 1), Move(0, 2), Move(0, 3), Move(0, 4),
-                           Move(0, 5), Move(0, 6), Move(0, 7),
-                           Move(0, -1), Move(0, -2), Move(0, -3), Move(0, -4),
-                           Move(0, -5), Move(0, -6), Move(0, -7)
-                          };
-
-const Move queen_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
-                            Move(5, 5), Move(6, 6), Move(7, 7),
-                            Move(-1, -1), Move(-2, -2), Move(-3, -3), Move(-4, -4),
-                            Move(-5, -5), Move(-6, -6), Move(-7, -7),
-                            Move(1, -1), Move(2, -2), Move(3, -3), Move(4, -4),
-                            Move(5, -5), Move(6, -6), Move(7, -7),
-                            Move(-1, 1), Move(-2, 2), Move(-3, 3), Move(-4, 4),
-                            Move(-5, 5), Move(-6, 6), Move(-7, 7),
-                            Move(1, 0), Move(2, 0), Move(3, 0), Move(4, 0), 
-                            Move(5, 0), Move(6, 0), Move(7, 0),
-                            Move(-1, 0), Move(-2, 0), Move(-3, 0), Move(-4, 0), 
-                            Move(-5, 0), Move(-6, 0), Move(-7, 0),
-                            Move(0, 1), Move(0, 2), Move(0, 3), Move(0, 4),
-                            Move(0, 5), Move(0, 6), Move(0, 7),
-                            Move(0, -1), Move(0, -2), Move(0, -3), Move(0, -4),
-                            Move(0, -5), Move(0, -6), Move(0, -7)
+const moves_t rook_moves = {M(1, 0), M(2, 0), M(3, 0), M(4, 0), 
+                            M(5, 0), M(6, 0), M(7, 0),
+                            M(-1, 0), M(-2, 0), M(-3, 0), M(-4, 0), 
+                            M(-5, 0), M(-6, 0), M(-7, 0),
+                            M(0, 1), M(0, 2), M(0, 3), M(0, 4),
+                            M(0, 5), M(0, 6), M(0, 7),
+                            M(0, -1), M(0, -2), M(0, -3), M(0, -4),
+                            M(0, -5), M(0, -6), M(0, -7)
                            };
 
-const Move king_moves[] = {Move(1, 0), Move(1, 1), Move(0, 1), Move(-1, 1), 
-                           Move(-1, 0), Move(-1, -1), Move(0, -1), Move(1, -1)
-                          };
-
-const Move knight_moves[] = {Move(1, 2), Move(1, -2), Move(-1, 2), Move(-1, 2), 
-                             Move(2, 1), Move(2, -1), Move(-2, 1), Move(-2, -1)
+const moves_t queen_moves = {M(1, 1), M(2, 2), M(3, 3), M(4, 4),
+                             M(5, 5), M(6, 6), M(7, 7),
+                             M(-1, -1), M(-2, -2), M(-3, -3), M(-4, -4),
+                             M(-5, -5), M(-6, -6), M(-7, -7),
+                             M(1, -1), M(2, -2), M(3, -3), M(4, -4),
+                             M(5, -5), M(6, -6), M(7, -7),
+                             M(-1, 1), M(-2, 2), M(-3, 3), M(-4, 4),
+                             M(-5, 5), M(-6, 6), M(-7, 7),
+                             M(1, 0), M(2, 0), M(3, 0), M(4, 0), 
+                             M(5, 0), M(6, 0), M(7, 0),
+                             M(-1, 0), M(-2, 0), M(-3, 0), M(-4, 0), 
+                             M(-5, 0), M(-6, 0), M(-7, 0),
+                             M(0, 1), M(0, 2), M(0, 3), M(0, 4),
+                             M(0, 5), M(0, 6), M(0, 7),
+                             M(0, -1), M(0, -2), M(0, -3), M(0, -4),
+                             M(0, -5), M(0, -6), M(0, -7)
                             };
 
-const Move pawn_first_moves[] = {Move(0, -1), Move(0, -2)};
-const Move pawn_moves[] = {Move(0, -1)};
-const Move pawn_capture_moves[] = {Move(1, -1), Move(-1, -1)};
+const moves_t king_moves = {M(1, 0), M(1, 1), M(0, 1), M(-1, 1), 
+                            M(-1, 0), M(-1, -1), M(0, -1), M(1, -1)
+                           };
+
+const moves_t knight_moves = {M(1, 2), M(1, -2), M(-1, 2), M(-1, 2), 
+                              M(2, 1), M(2, -1), M(-2, 1), M(-2, -1)
+                             };
+
+const moves_t pawn_first_moves = {M(0, -1), M(0, -2)};
+const moves_t pawn_moves = {M(0, -1)};
+const moves_t pawn_capture_moves = {M(1, -1), M(-1, -1)};
 
 #endif
