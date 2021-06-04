@@ -1,19 +1,22 @@
 #ifndef BOARD_CONSTANTS_HPP
 #define BOARD_CONSTANTS_HPP
 
+#include <array>
 #include "piece.hpp"
 #include "move.hpp"
 
 #define BOARD_SIZE 8
 
-const Piece init_board[BOARD_SIZE][BOARD_SIZE] = {{r, n, b, q, k, b, n, r},
-                                                  {p, p, p, p, p, p, p, p},
-                                                  {_, _, _, _, _, _, _, _},
-                                                  {_, _, _, _, _, _, _, _},
-                                                  {_, _, _, _, _, _, _, _},
-                                                  {_, _, _, _, _, _, _, _},
-                                                  {P, P, P, P, P, P, P, P},
-                                                  {R, N, B, Q, K, B, N, R}};
+typedef std::array<std::array<Piece, BOARD_SIZE>, BOARD_SIZE> board_t;
+
+const board_t init_board = {{{r, n, b, q, k, b, n, r},
+                            {p, p, p, p, p, p, p, p},
+                            {_, _, _, _, _, _, _, _},
+                            {_, _, _, _, _, _, _, _},
+                            {_, _, _, _, _, _, _, _},
+                            {_, _, _, _, _, _, _, _},
+                            {P, P, P, P, P, P, P, P},
+                            {R, N, B, Q, K, B, N, R}}};
 
 const Move diag_moves[] = {Move(1, 1), Move(2, 2), Move(3, 3), Move(4, 4),
                            Move(5, 5), Move(6, 6), Move(7, 7),

@@ -4,32 +4,26 @@
 #include "board.hpp"
 #include "util.hpp"
 
-using namespace std;
-
 
 Board::Board() {
-    for(int i = 0; i < BOARD_SIZE; i++) {
-        for(int j = 0; j < BOARD_SIZE; j++) {
-            board[i][j] = init_board[i][j];
-        }
-    }
+    board = init_board;
 }
 
 Board::Board(Board &b) {
-    for(int i = 0; i < BOARD_SIZE; i++) {
-        for(int j = 0; j < BOARD_SIZE; j++) {
-            board[i][j] = b.board[i][j];
-        }
-    }
+    board = b.board;
 }
 
 void Board::print_board() {
     for(int i = 0; i < BOARD_SIZE; i++) {
         for(int j = 0; j < BOARD_SIZE; j++) {
-            cout << to_char(board[i][j]);
+            std::cout << to_char(board[i][j]);
         }
-        cout << endl;
+        std::cout << std::endl;
     }
+}
+
+board_t Board::get_board() {
+    return board;
 }
 
 Piece Board::move_piece(int r1, int c1, int r2, int c2) {

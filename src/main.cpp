@@ -3,7 +3,6 @@
 #include "board.hpp"
 #include "game.hpp"
 
-using namespace std; 
 
 int main () {
     Board board;
