@@ -2,6 +2,7 @@
 #define BOARD_HPP
 
 #include "board_constants.hpp"
+#include "move.hpp"
 #include "piece.hpp"
 
 class Board {

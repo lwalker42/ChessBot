@@ -1,5 +1,6 @@
 #include <iostream>
 #include "piece.hpp"
+#include "move.hpp"
 #include "board_constants.hpp"
 #include "board.hpp"
 #include "util.hpp"
@@ -39,7 +40,7 @@ Piece Board::move_piece(int r1, int c1, int r2, int c2) {
 }
 
 Piece Board::move_piece(int r1, int c1, Move m) {
-    return move_piece(r1, c1, r1 + m.r, c1 + m.c);
+    return move_piece(r1, c1, r1 + m.first, c1 + m.second);
 }
 
 moves_t Board::get_moves(int r1, int c1) {
