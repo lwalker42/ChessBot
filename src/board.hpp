@@ -13,6 +13,8 @@ class Board {
         void print_board();
         board_t get_board();
         Piece move_piece(int, int, int = -1, int = -1);
+        Piece move_piece(int, int, Move);
+        moves_t get_moves(int, int);
 };
 
 #endif

@@ -8,30 +8,30 @@ using namespace std;
 char to_char(Piece piece) {
     switch(piece) {
         case K:
-        return 'K';
+            return 'K';
         case Q:
-        return 'Q';
+            return 'Q';
         case R:
-        return 'R';
+            return 'R';
         case B:
-        return 'B';
+            return 'B';
         case N:
-        return 'N';
+            return 'N';
         case P:
-        return 'P';
+            return 'P';
         case k:
-        return 'k';
+            return 'k';
         case q:
-        return 'q';
+            return 'q';
         case r:
-        return 'r';
+            return 'r';
         case b:
-        return 'b';
+            return 'b';
         case n:
-        return 'n';
+            return 'n';
         case p:
-        return 'p';
+            return 'p';
         default:
-        return '-';
+            return '-';
     }
 }

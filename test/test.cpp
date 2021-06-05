@@ -35,7 +35,7 @@ const board_t verify_init_board = {{{r, n, b, q, k, b, n, r},
                                     {P, P, P, P, P, P, P, P},
                                     {R, N, B, Q, K, B, N, R}}};
 
-TEST_CASE("Moving pieces on the board") {
+TEST_CASE("Moving pieces (arbitrarily) on the board") {
     Board board;
     REQUIRE(board.get_board() == init_board);
 

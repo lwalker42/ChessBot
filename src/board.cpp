@@ -37,3 +37,33 @@ Piece Board::move_piece(int r1, int c1, int r2, int c2) {
     }
     return p;
 }
+
+Piece Board::move_piece(int r1, int c1, Move m) {
+    return move_piece(r1, c1, r1 + m.r, c1 + m.c);
+}
+
+moves_t Board::get_moves(int r1, int c1) {
+    if (!on_board(r1, c1)) return {};
+    switch(board[r1][c1]) {
+        case K:
+        case k:
+            return king_moves;
+        case Q:
+        case q:
+            return queen_moves;
+        case R:
+        case r:
+            return rook_moves;
+        case B:
+        case b:
+            return bishop_moves;
+        case N:
+        case n:
+            return knight_moves;
+        case P:
+        case p:
+            return pawn_moves;
+        default:
+            return {};
+    }
+}
