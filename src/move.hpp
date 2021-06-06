@@ -7,11 +7,11 @@
 
 class Move : public std::pair<int, int> {
     public:
-    int r, c;
-    Move(int rr, int cc) : std::pair<int, int>(rr, cc), r(first), c(second) {};
-    std::string to_string() {
-        return "(" + std::to_string(r) + ", " + std::to_string(c) + ")";
-    }
+        int r, c;
+        Move(int rr, int cc) : std::pair<int, int>(rr, cc), r(first), c(second) {};
+        std::string to_string() {
+            return "(" + std::to_string(r) + ", " + std::to_string(c) + ")";
+        }
 };
 typedef Move M;
 typedef std::vector<Move> moves_t;
