@@ -16,6 +16,9 @@ class Board {
         Piece move_piece(int, int, int = -1, int = -1);
         Piece move_piece(int, int, Move);
         moves_t get_moves(int, int);
+        moves2_t get_moves_lists(int, int);
+        moves_t filter_moves_lists(int, int, moves2_t);
+        moves_t filter_check(int, int, moves_t);
 };
 
 #endif

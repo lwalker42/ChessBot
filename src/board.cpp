@@ -40,10 +40,19 @@ Piece Board::move_piece(int r1, int c1, int r2, int c2) {
 }
 
 Piece Board::move_piece(int r1, int c1, Move m) {
-    return move_piece(r1, c1, r1 + m.first, c1 + m.second);
+    return move_piece(r1, c1, r1 + m.r, c1 + m.c);
 }
 
-moves_t Board::get_moves(int r1, int c1) {
+moves_t Board::get_moves(int r1, int r2) {
+    moves_t moves;
+    moves2_t m_list = get_moves_lists(r1, r2);
+    for (moves_t m : m_list) {
+        moves.insert(moves.end(), m.begin(), m.end());
+    }
+    return moves;
+}
+
+moves2_t Board::get_moves_lists(int r1, int c1) {
     if (!on_board(r1, c1)) return {};
     switch(board[r1][c1]) {
         case K:
@@ -67,4 +76,8 @@ moves_t Board::get_moves(int r1, int c1) {
         default:
             return {};
     }
+}
+
+moves_t Board::filter_moves_lists(int r1, int c1, moves2_t moves_list) {
+
 }
