@@ -2,15 +2,12 @@
 #define BOARD_CONSTANTS_HPP
 
 #include <array>
-#include <vector>
 #include "piece.hpp"
 #include "move.hpp"
 
 #define BOARD_SIZE 8
 
 typedef std::array<std::array<Piece, BOARD_SIZE>, BOARD_SIZE> board_t;
-typedef std::vector<Move> moves_t;
-typedef std::vector<moves_t> moves2_t;
 
 const board_t init_board = {{{r, n, b, q, k, b, n, r},
                             {p, p, p, p, p, p, p, p},
