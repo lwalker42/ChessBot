@@ -11,7 +11,8 @@ enum piece_t {
 };
 
 char to_char(piece_t);
-
+bool same_color(piece_t, piece_t);
 moves2_t get_piece_moves(piece_t);
+
 
 #endif

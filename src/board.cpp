@@ -53,11 +53,8 @@ piece_t Board::move_piece(int r, int c, Move m) {
 
 
 moves_t Board::get_moves(int r, int c) {
-    moves_t moves;
     moves2_t m_list = get_moves_lists(r, c);
-    for (moves_t m : m_list) {
-        moves.insert(moves.end(), m.begin(), m.end());
-    }
+    moves_t moves = filter_moves_lists(r, c, m_list);
     return moves;
 }
 
@@ -66,6 +63,34 @@ moves2_t Board::get_moves_lists(int r, int c) {
     return get_piece_moves(board[r][c]);
 }
 
-moves_t Board::filter_moves_lists(int r1, int c1, moves2_t moves_list) {
+moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) {
+    if (!on_board(r, c)) return {};
+    piece_t p1 = board[r][c];
+    if (p1 == __) return {};
 
+    moves_t moves;
+    moves_t::iterator it;
+    for (moves_t move_list : moves_list) {
+        for (it = move_list.begin(); it != move_list.end(); it++) {
+            if(on_board(r + (*it).r, c + (*it).c)) {
+                piece_t p2 = board[r][c];
+                if(p2 == __) {                          //piece is empty
+                    continue;
+                } else if(same_color(p1, p2)) {         //piece color of location is the same
+                    break;
+                } else {                                //piece is opposite color: capture (i.e. increment iterator then break)
+                    it++;
+                    break;
+                }
+            } else {                                    //out of bounds
+                break;
+            }
+        }
+        moves.insert(moves.end(), move_list.begin(), it);
+    }
+    return moves;
+}
+
+moves_t Board::filter_check(int r1, int c1, moves_t moves) {
+    return moves;
 }

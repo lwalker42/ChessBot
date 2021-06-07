@@ -14,6 +14,10 @@ char to_char(piece_t p) {
     else return -p;
 }
 
+bool same_color(piece_t p1, piece_t p2) {
+    return p1 * p2 > 0;
+}
+
 moves2_t get_piece_moves(piece_t p) {
     switch(abs(p)) {
         case WK:
