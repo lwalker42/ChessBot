@@ -1,6 +1,8 @@
 #ifndef PIECE_HPP
 #define PIECE_HPP
 
+#include "move.hpp"
+
 //White > 0; Black < 0; empty == 0
 enum piece_t {
     __=0,
@@ -8,7 +10,8 @@ enum piece_t {
     BK=-'K', BQ=-'Q', BR=-'R', BB=-'B', BN=-'N', BP=-'P' 
 };
 
-char to_char(piece_t piece);
+char to_char(piece_t);
 
+moves2_t get_piece_moves(piece_t);
 
 #endif

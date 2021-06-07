@@ -46,37 +46,24 @@ piece_t Board::move_piece(int r1, int c1, int r2, int c2) {
     return p;
 }
 
-piece_t Board::move_piece(int r1, int c1, Move m) {
-    return move_piece(r1, c1, r1 + m.r, c1 + m.c);
+piece_t Board::move_piece(int r, int c, Move m) {
+    return move_piece(r, c, r + m.r, c + m.c);
 }
 
-moves_t Board::get_moves(int r1, int r2) {
+
+
+moves_t Board::get_moves(int r, int c) {
     moves_t moves;
-    moves2_t m_list = get_moves_lists(r1, r2);
+    moves2_t m_list = get_moves_lists(r, c);
     for (moves_t m : m_list) {
         moves.insert(moves.end(), m.begin(), m.end());
     }
     return moves;
 }
 
-moves2_t Board::get_moves_lists(int r1, int c1) {
-    if (!on_board(r1, c1)) return {};
-    switch(abs(board[r1][c1])) {
-        case WK:
-            return king_moves;
-        case WQ:
-            return queen_moves;
-        case WR:
-            return rook_moves;
-        case WB:
-            return bishop_moves;
-        case WN:
-            return knight_moves;
-        case WP:
-            return pawn_moves;
-        default:
-            return {};
-    }
+moves2_t Board::get_moves_lists(int r, int c) {
+    if (!on_board(r, c)) return {};
+    return get_piece_moves(board[r][c]);
 }
 
 moves_t Board::filter_moves_lists(int r1, int c1, moves2_t moves_list) {

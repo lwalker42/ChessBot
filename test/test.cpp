@@ -22,6 +22,7 @@ TEST_CASE("Test board bounds") {
     CHECK(!on_board(BOARD_SIZE, BOARD_SIZE));
 }
 
+
 const board_t test_board = {{{__,BB,BQ,BK,BB,BN,BR,BN},
                              {BP,__,BP,BP,BP,BP,BP,BP},
                              {__,WR,WN,WB,WQ,WK,WB,WN},
@@ -54,6 +55,7 @@ TEST_CASE("Moving pieces (arbitrarily) on the board") {
     CHECK(board.get_board() != init_board); //Make sure a deep copy is made during initialization
     CHECK(init_board == verify_init_board);
 }
+
 
 TEST_CASE("Retrieving move lists") {
     Board board;
