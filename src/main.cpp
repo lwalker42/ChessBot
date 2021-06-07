@@ -9,6 +9,7 @@ int main () {
     board.move_piece(0, 6, 5, 7);
     board.move_piece(7, 7, 0, 1);
     board.move_piece(1, 6);
+    board.get_moves(7, 6);
     std::cout << board.to_string();
     return 0;
 }

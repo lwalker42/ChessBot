@@ -61,12 +61,12 @@ const moves2_t king_moves = {{M(1, 0)}, {M(1, 1)}, {M(0, 1)}, {M(-1, 1)},
                              {M(-1, 0)}, {M(-1, -1)}, {M(0, -1)}, {M(1, -1)}
                             };
 
-const moves2_t knight_moves = {{M(1, 2)}, {M(1, -2)}, {M(-1, 2)}, {M(-1, 2)}, 
-                               {M(2, 1)}, {M(2, -1)}, {M(-2, 1)}, {M(-2, -1)}
+const moves2_t knight_moves = {{M(-2, 1)}, {M(-2, -1)}, {M(-1, -2)}, {M(1, -2)}, 
+                               {M(2, -1)}, {M(2, 1)}, {M(1, 2)}, {M(-1, 2)}
                               };
 
-const moves2_t pawn_first_moves = {{M(0, -1), M(0, -2)}};
-const moves2_t pawn_moves = {{M(0, -1)}};
-const moves2_t pawn_capture_moves = {{M(1, -1)}, {M(-1, -1)}};
+const moves2_t pawn_first_moves = {{M(-1, 0), M(-2, 0)}};
+const moves2_t pawn_moves = {{M(-1, 0)}};
+const moves2_t pawn_capture_moves = {{M(-1, -1)}, {M(-1, 1)}};
 
 #endif

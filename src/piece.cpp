@@ -31,7 +31,7 @@ moves2_t get_piece_moves(piece_t p) {
         case WN:
             return knight_moves;
         case WP:
-            return pawn_moves;
+            return pawn_first_moves;
         default:
             return {};
     }

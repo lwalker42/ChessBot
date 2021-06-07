@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "piece.hpp"
 #include "move.hpp"
@@ -72,17 +73,23 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
     moves_t::iterator it;
     for (moves_t move_list : moves_list) {
         for (it = move_list.begin(); it != move_list.end(); it++) {
-            if(on_board(r + (*it).r, c + (*it).c)) {
-                piece_t p2 = board[r][c];
+            int r_move = r + (*it).r;
+            int c_move = c + (*it).c;
+            if(on_board(r_move, c_move)) {
+                piece_t p2 = board[r_move][c_move];
                 if(p2 == __) {                          //piece is empty
+                    std::cout << "Empty space\n";
                     continue;
                 } else if(same_color(p1, p2)) {         //piece color of location is the same
+                    std::cout << "Friendly piece\n";
                     break;
                 } else {                                //piece is opposite color: capture (i.e. increment iterator then break)
+                    std::cout << "Enemy piece\n";
                     it++;
                     break;
                 }
             } else {                                    //out of bounds
+                std::cout << "Out of bounds\n";
                 break;
             }
         }

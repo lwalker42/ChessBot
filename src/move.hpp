@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+//(change in row, change in col) i.e. (delta_y, delta_x)
+
 class Move : public std::pair<int, int> {
     public:
         int r, c;

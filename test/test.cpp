@@ -7,6 +7,7 @@
 #include "../src/util.hpp"
 #include "../src/board.hpp"
 #include "../src/move.hpp"
+#include "../src/piece.hpp"
 
 TEST_CASE("Test board bounds") {
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -42,6 +43,7 @@ const board_t verify_init_board = {{{BR,BN,BB,BQ,BK,BB,BN,BR},
                                     {WR,WN,WB,WQ,WK,WB,WN,WR}
                                   }};
 
+
 TEST_CASE("Moving pieces (arbitrarily) on the board") {
     Board board;
     CHECK(board.get_board() == init_board);
@@ -56,16 +58,41 @@ TEST_CASE("Moving pieces (arbitrarily) on the board") {
     CHECK(init_board == verify_init_board);
 }
 
+TEST_CASE("Comparing piece colors") {
+    CHECK(same_color(WK, WQ));
+    CHECK(same_color(WK, WP));
+    CHECK(same_color(BK, BQ));
+    CHECK(same_color(BN, BP));
+    CHECK(!same_color(WK, BQ));
+    CHECK(!same_color(WK, BK));
+    CHECK(!same_color(WK, __));
+    CHECK(!same_color(__, WK));
+    CHECK(!same_color(__, BK));
+}
+
+const board_t _one_queen = {{{__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,WQ,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                           }};
+const Board one_queen;
 
 TEST_CASE("Retrieving move lists") {
     Board board;
     const moves_t black_king = {};
-    const moves_t white_pawn = {M(0, -1), M(0, -2)};
-    const moves_t white_knight = {M(-1, -2), M(1, -2)};
+    const moves_t white_pawn = {M(-1, 0), M(-2, 0)};
+    const moves_t white_knight = {M(-2, 1), M(-2, -1)};
     moves_t moves = board.get_moves(0, 4);
     CHECK(to_string(moves) == to_string(black_king));
     moves = board.get_moves(6, 2);
     CHECK(to_string(moves) == to_string(white_pawn));
     moves = board.get_moves(7, 6);
     CHECK(to_string(moves) == to_string(white_knight));
+
+    moves = one_queen.get_moves(3, 3);
+    CHECK(to_string(moves) != "");
 }
