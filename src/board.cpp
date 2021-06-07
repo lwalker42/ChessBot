@@ -52,18 +52,18 @@ piece_t Board::move_piece(int r, int c, Move m) {
 
 
 
-moves_t Board::get_moves(int r, int c) {
+moves_t Board::get_moves(int r, int c) const{
     moves2_t m_list = get_moves_lists(r, c);
     moves_t moves = filter_moves_lists(r, c, m_list);
     return moves;
 }
 
-moves2_t Board::get_moves_lists(int r, int c) {
+moves2_t Board::get_moves_lists(int r, int c) const {
     if (!on_board(r, c)) return {};
     return get_piece_moves(board[r][c]);
 }
 
-moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) {
+moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
     if (!on_board(r, c)) return {};
     piece_t p1 = board[r][c];
     if (p1 == __) return {};
@@ -91,6 +91,6 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) {
     return moves;
 }
 
-moves_t Board::filter_check(int r1, int c1, moves_t moves) {
+moves_t Board::filter_check(int r1, int c1, moves_t moves) const {
     return moves;
 }

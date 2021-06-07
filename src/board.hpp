@@ -19,10 +19,10 @@ class Board {
         piece_t move_piece(int, int, int = -1, int = -1);
         piece_t move_piece(int, int, Move);
 
-        moves_t get_moves(int, int);
-        moves2_t get_moves_lists(int, int);
-        moves_t filter_moves_lists(int, int, moves2_t);
-        moves_t filter_check(int, int, moves_t);
+        moves_t get_moves(int, int) const;
+        moves2_t get_moves_lists(int, int) const;
+        moves_t filter_moves_lists(int, int, moves2_t) const;
+        moves_t filter_check(int, int, moves_t) const;
 };
 
 #endif
