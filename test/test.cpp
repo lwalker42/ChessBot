@@ -70,16 +70,16 @@ TEST_CASE("Comparing piece colors") {
     CHECK(!same_color(__, BK));
 }
 
-const board_t _one_queen = {{{__,__,__,__,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                             {__,__,__,WQ,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                             {__,__,__,__,__,__,__,__},
-                           }};
-const Board one_queen;
+const board_t _sparse_board = {{{__,__,__,__,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                                {__,__,__,WQ,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                                {__,__,__,__,__,__,__,__},
+                              }};
+const Board sparse_board(_sparse_board);
 
 
 TEST_CASE("Retrieving move lists") {
@@ -94,6 +94,22 @@ TEST_CASE("Retrieving move lists") {
     moves = board.get_moves(7, 6);
     CHECK(move::to_string(moves) == move::to_string(white_knight));
 
-    moves = one_queen.get_moves(3, 3);
-    CHECK(move::to_string(moves) != "");
+    for (int i = 0; i < BOARD_SIZE; i++){
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (i == 3 && j == 3) continue;
+            moves = sparse_board.get_moves(i, j);
+            CHECK(move::to_string(moves) == "");
+
+        }
+    }
+    const moves_t queen_moves = {M(1, 1), M(2, 2), M(3, 3), M(4, 4), 
+                                 M(-1, -1), M(-2, -2), M(-3, -3), 
+                                 M(1, -1), M(2, -2), M(3, -3), 
+                                 M(-1, 1), M(-2, 2), M(-3, 3), 
+                                 M(1, 0), M(2, 0), M(3, 0), M(4, 0), 
+                                 M(-1, 0), M(-2, 0), M(-3, 0), 
+                                 M(0, 1), M(0, 2), M(0, 3), M(0, 4), 
+                                 M(0, -1), M(0, -2), M(0, -3)};
+    moves = sparse_board.get_moves(3, 3);
+    CHECK(move::to_string(moves) == move::to_string(queen_moves));
 }

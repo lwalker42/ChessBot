@@ -10,7 +10,7 @@ namespace move{
             s += m.to_string();
             s += ", ";
         }
-        s += "\n";
+        if (!s.empty()) s += "\n";
         return s;
     }
 
