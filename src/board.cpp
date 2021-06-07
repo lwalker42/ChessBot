@@ -65,6 +65,8 @@ moves2_t Board::get_moves_lists(int r, int c) const {
 }
 
 moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
+    std::cout << "Starting with move list: " << move::to_string(moves_list);
+
     if (!on_board(r, c)) return {};
     piece_t p1 = board[r][c];
     if (p1 == __) return {};

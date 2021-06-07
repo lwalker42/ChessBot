@@ -19,7 +19,9 @@ typedef Move M;
 typedef std::vector<Move> moves_t;
 typedef std::vector<moves_t> moves2_t;
 
-std::string to_string(moves_t moves);
-std::string to_string(moves2_t moves);
+namespace move {
+    std::string to_string(moves_t);
+    std::string to_string(moves2_t);
+}
 
 #endif

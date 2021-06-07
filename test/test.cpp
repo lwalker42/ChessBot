@@ -81,18 +81,19 @@ const board_t _one_queen = {{{__,__,__,__,__,__,__,__},
                            }};
 const Board one_queen;
 
+
 TEST_CASE("Retrieving move lists") {
     Board board;
     const moves_t black_king = {};
     const moves_t white_pawn = {M(-1, 0), M(-2, 0)};
     const moves_t white_knight = {M(-2, 1), M(-2, -1)};
     moves_t moves = board.get_moves(0, 4);
-    CHECK(to_string(moves) == to_string(black_king));
+    CHECK(move::to_string(moves) == move::to_string(black_king));
     moves = board.get_moves(6, 2);
-    CHECK(to_string(moves) == to_string(white_pawn));
+    CHECK(move::to_string(moves) == move::to_string(white_pawn));
     moves = board.get_moves(7, 6);
-    CHECK(to_string(moves) == to_string(white_knight));
+    CHECK(move::to_string(moves) == move::to_string(white_knight));
 
     moves = one_queen.get_moves(3, 3);
-    CHECK(to_string(moves) != "");
+    CHECK(move::to_string(moves) != "");
 }
