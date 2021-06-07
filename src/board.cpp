@@ -1,4 +1,5 @@
-#include <iostream>
+#include <string>
+
 #include "piece.hpp"
 #include "move.hpp"
 #include "board_constants.hpp"
@@ -10,36 +11,42 @@ Board::Board() {
     board = init_board;
 }
 
+Board::Board(board_t b) {
+    board = b;
+}
+
 Board::Board(Board &b) {
     board = b.board;
 }
 
-void Board::print_board() {
+std::string Board::to_string() {
+    std::string str;
     for(int i = 0; i < BOARD_SIZE; i++) {
         for(int j = 0; j < BOARD_SIZE; j++) {
-            std::cout << to_char(board[i][j]);
+            str += to_char(board[i][j]);
         }
-        std::cout << std::endl;
+        str += "\n";
     }
+    return str;
 }
 
 board_t Board::get_board() {
     return board;
 }
 
-Piece Board::move_piece(int r1, int c1, int r2, int c2) {
-    if (!on_board(r1, c1)) return _;
+piece_t Board::move_piece(int r1, int c1, int r2, int c2) {
+    if (!on_board(r1, c1)) return __;
 
-    Piece p = board[r1][c1];
-    if (p == _) return _;
-    board[r1][c1] = _;
+    piece_t p = board[r1][c1];
+    if (p == __) return p;
+    board[r1][c1] = __;
     if (on_board(r2, c2)) {
         board[r2][c2] = p;
     }
     return p;
 }
 
-Piece Board::move_piece(int r1, int c1, Move m) {
+piece_t Board::move_piece(int r1, int c1, Move m) {
     return move_piece(r1, c1, r1 + m.r, c1 + m.c);
 }
 
@@ -54,24 +61,18 @@ moves_t Board::get_moves(int r1, int r2) {
 
 moves2_t Board::get_moves_lists(int r1, int c1) {
     if (!on_board(r1, c1)) return {};
-    switch(board[r1][c1]) {
-        case K:
-        case k:
+    switch(abs(board[r1][c1])) {
+        case WK:
             return king_moves;
-        case Q:
-        case q:
+        case WQ:
             return queen_moves;
-        case R:
-        case r:
+        case WR:
             return rook_moves;
-        case B:
-        case b:
+        case WB:
             return bishop_moves;
-        case N:
-        case n:
+        case WN:
             return knight_moves;
-        case P:
-        case p:
+        case WP:
             return pawn_moves;
         default:
             return {};

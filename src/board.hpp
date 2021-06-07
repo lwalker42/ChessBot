@@ -1,6 +1,8 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#include <string>
+
 #include "board_constants.hpp"
 #include "move.hpp"
 #include "piece.hpp"
@@ -10,11 +12,13 @@ class Board {
     
     public:
         Board();
+        Board(board_t);
         Board(Board&);
-        void print_board();
+        std::string to_string();
         board_t get_board();
-        Piece move_piece(int, int, int = -1, int = -1);
-        Piece move_piece(int, int, Move);
+        piece_t move_piece(int, int, int = -1, int = -1);
+        piece_t move_piece(int, int, Move);
+
         moves_t get_moves(int, int);
         moves2_t get_moves_lists(int, int);
         moves_t filter_moves_lists(int, int, moves2_t);

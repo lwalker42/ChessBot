@@ -1,13 +1,14 @@
 #ifndef PIECE_HPP
 #define PIECE_HPP
 
-enum Piece {
-    _,                //0
-    K, Q, R, B, N, P, //1, 2, 3, 4, 5, 6
-    k, q, r, b, n, p  //7, 8, 9, 10, 11, 12
+//White > 0; Black < 0; empty == 0
+enum piece_t {
+    __=0,
+    WK='K', WQ='Q', WR='R', WB='B', WN='N', WP='P',
+    BK=-'K', BQ=-'Q', BR=-'R', BB=-'B', BN=-'N', BP=-'P' 
 };
 
-char to_char(Piece);
-//string to_string(Piece);
+char to_char(piece_t piece);
+
 
 #endif

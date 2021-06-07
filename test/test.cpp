@@ -22,22 +22,24 @@ TEST_CASE("Test board bounds") {
     CHECK(!on_board(BOARD_SIZE, BOARD_SIZE));
 }
 
-const board_t test_board = {{{_, b, q, k, b, n, r, n},
-                             {p, _, p, p, p, p, p, p},
-                             {_, R, N, B, Q, K, B, N},
-                             {_, _, _, _, _, _, _, _},
-                             {_, _, _, _, _, _, _, _},
-                             {_, _, _, _, _, _, _, _},
-                             {P, P, P, P, P, P, _, P},
-                             {_, _, _, _, _, _, _, _}}};
-const board_t verify_init_board = {{{r, n, b, q, k, b, n, r},
-                                    {p, p, p, p, p, p, p, p},
-                                    {_, _, _, _, _, _, _, _},
-                                    {_, _, _, _, _, _, _, _},
-                                    {_, _, _, _, _, _, _, _},
-                                    {_, _, _, _, _, _, _, _},
-                                    {P, P, P, P, P, P, P, P},
-                                    {R, N, B, Q, K, B, N, R}}};
+const board_t test_board = {{{__,BB,BQ,BK,BB,BN,BR,BN},
+                             {BP,__,BP,BP,BP,BP,BP,BP},
+                             {__,WR,WN,WB,WQ,WK,WB,WN},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {__,__,__,__,__,__,__,__},
+                             {WP,WP,WP,WP,WP,WP,__,WP},
+                             {__,__,__,__,__,__,__,__}
+                           }};
+const board_t verify_init_board = {{{BR,BN,BB,BQ,BK,BB,BN,BR},
+                                    {BP,BP,BP,BP,BP,BP,BP,BP},
+                                    {__,__,__,__,__,__,__,__},
+                                    {__,__,__,__,__,__,__,__},
+                                    {__,__,__,__,__,__,__,__},
+                                    {__,__,__,__,__,__,__,__},
+                                    {WP,WP,WP,WP,WP,WP,WP,WP},
+                                    {WR,WN,WB,WQ,WK,WB,WN,WR}
+                                  }};
 
 TEST_CASE("Moving pieces (arbitrarily) on the board") {
     Board board;

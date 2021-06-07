@@ -6,8 +6,8 @@
 std::string to_string(moves_t moves) {
     std::string s;
     for (Move m : moves) {
-        s.append(m.to_string());
-        s.append(", ");
+        s += m.to_string();
+        s += ", ";
     }
     return s;
 }
