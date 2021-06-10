@@ -11,7 +11,7 @@
           "-g",
           "${workspaceFolder}/src/*.cpp",
           "-o",
-          "${workspaceFolder}/bin/main"
+          "${workspaceFolder}/bin/main",
         ],
         "options": {
           "cwd": "/usr/bin"
@@ -35,6 +35,7 @@
           "${workspaceFolder}/src/piece.cpp",
           "${workspaceFolder}/src/util.cpp",
           "${workspaceFolder}/src/move.cpp",
+          "${workspaceFolder}/src/user_input.cpp",
           "${workspaceFolder}/test/*.cpp",
           "-o",
           "${workspaceFolder}/bin/test"
