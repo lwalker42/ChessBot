@@ -14,6 +14,14 @@ char to_char(piece_t p) {
     else return -p;
 }
 
+bool is_empty(piece_t p) {
+    return p == __;
+}
+
+bool get_color(piece_t p) {
+    return p > 0;
+}
+
 bool same_color(piece_t p1, piece_t p2) {
     return p1 * p2 > 0;
 }
