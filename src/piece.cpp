@@ -14,7 +14,7 @@ using namespace std;
 char to_char(piece_t p) {
     if (p == __) return '-';
     else if (p > 0) return p;
-    else return -p;
+    else return tolower(-p);
 }
 
 bool is_empty(piece_t p) {
@@ -48,18 +48,18 @@ moves2_t get_piece_moves(piece_t p, Special_Move sm) {
     }
 }
 
-moves2_t get_pawn_moves(piece_t p, Special_Move pm) {
+moves2_t get_pawn_moves(piece_t p, Special_Move sm) {
     int color = (p > 0) ? 0 : 1;
     moves2_t moves;
-    switch (pm) {
+    switch (sm) {
     case PAWN_STARTING:
-        moves = pawn_first_moves[p];
+        moves = pawn_first_moves[color];
         break;
     case PAWN_CAPTURE:
-        moves = pawn_capture_moves[p];
+        moves = pawn_capture_moves[color];
         break;
     default:
-        moves = pawn_moves[p];
+        moves = pawn_moves[color];
         break;
     }
         /*std::for_each(moves.begin(), 
