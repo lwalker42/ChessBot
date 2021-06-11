@@ -23,6 +23,10 @@ Board::Board(Board &b) {
     board = b.board;
 }
 
+piece_t Board::operator[](Pos p) {
+    return board[p.r][p.c];
+}
+
 std::string Board::to_string() {
     std::string str;
     for(int i = 0; i < BOARD_SIZE; i++) {
@@ -37,6 +41,7 @@ std::string Board::to_string() {
 board_t Board::get_board() {
     return board;
 }
+
 
 piece_t Board::move_piece(int r1, int c1, int r2, int c2, piece_t new_p) {
     if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
