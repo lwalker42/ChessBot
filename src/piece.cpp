@@ -29,6 +29,10 @@ bool same_color(piece_t p1, piece_t p2) {
     return p1 * p2 > 0;
 }
 
+bool is_pawn(piece_t p) {
+    return abs(p) == WP;
+}
+
 moves2_t get_piece_moves(piece_t p, Special_Move sm) {
     switch(abs(p)) {
         case WK:
@@ -47,6 +51,7 @@ moves2_t get_piece_moves(piece_t p, Special_Move sm) {
             return {};
     }
 }
+
 
 moves2_t get_pawn_moves(piece_t p, Special_Move sm) {
     int color = (p > 0) ? 0 : 1;

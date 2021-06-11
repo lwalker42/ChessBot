@@ -16,6 +16,7 @@ char to_char(piece_t);
 bool is_empty(piece_t);
 bool get_color(piece_t);
 bool same_color(piece_t, piece_t);
+bool is_pawn(piece_t);
 
 
 #endif
