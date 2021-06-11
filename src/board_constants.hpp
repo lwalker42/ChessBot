@@ -7,6 +7,13 @@
 
 #define BOARD_SIZE 8
 
+enum Special_Move {
+    NONE,
+    PAWN_STARTING,
+    PAWN_CAPTURE,
+    CASTLE
+};
+
 typedef std::array<std::array<piece_t, BOARD_SIZE>, BOARD_SIZE> board_t;
 
 const board_t init_board = {{{BR,BN,BB,BQ,BK,BB,BN,BR},
@@ -65,8 +72,10 @@ const moves2_t knight_moves = {{M(-2, 1)}, {M(-2, -1)}, {M(-1, -2)}, {M(1, -2)},
                                {M(2, -1)}, {M(2, 1)}, {M(1, 2)}, {M(-1, 2)}
                               };
 
-const moves2_t pawn_first_moves = {{M(-1, 0), M(-2, 0)}};
-const moves2_t pawn_moves = {{M(-1, 0)}};
-const moves2_t pawn_capture_moves = {{M(-1, -1)}, {M(-1, 1)}};
+
+//WHITE is first set, BLACK is second set
+const moves2_t pawn_first_moves[] = {{{M(-1, 0), M(-2, 0)}},  {{M(1, 0), M(2, 0)}}};
+const moves2_t pawn_moves[] = {{{M(-1, 0)}},  {{M(1, 0)}}};
+const moves2_t pawn_capture_moves[] = {{{M(-1, -1)}, {M(-1, 1)}},  {{M(1, 1)}, {M(1, -1)}}};
 
 #endif

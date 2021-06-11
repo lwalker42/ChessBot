@@ -1,8 +1,11 @@
 //#include <iostream>
 //#include <string>
-#include <cctype>
+#include <algorithm>
 
 #include "piece.hpp"
+#include "move.hpp"
+#include "piece_util.hpp"
+#include "pos.hpp"
 #include "board_constants.hpp"
 
 using namespace std; 
@@ -26,7 +29,7 @@ bool same_color(piece_t p1, piece_t p2) {
     return p1 * p2 > 0;
 }
 
-moves2_t get_piece_moves(piece_t p) {
+moves2_t get_piece_moves(piece_t p, Special_Move sm) {
     switch(abs(p)) {
         case WK:
             return king_moves;
@@ -39,8 +42,33 @@ moves2_t get_piece_moves(piece_t p) {
         case WN:
             return knight_moves;
         case WP:
-            return pawn_first_moves;
+            return get_pawn_moves(p, sm);
         default:
             return {};
     }
+}
+
+moves2_t get_pawn_moves(piece_t p, Special_Move pm) {
+    int color = (p > 0) ? 0 : 1;
+    moves2_t moves;
+    switch (pm) {
+    case PAWN_STARTING:
+        moves = pawn_first_moves[p];
+        break;
+    case PAWN_CAPTURE:
+        moves = pawn_capture_moves[p];
+        break;
+    default:
+        moves = pawn_moves[p];
+        break;
+    }
+        /*std::for_each(moves.begin(), 
+                      moves.end(), 
+            [](moves_t &ms) {
+                std::for_each(ms.begin(),
+                              ms.end(), 
+                              [](Move &m){m.r *= -1; m.c *=-1;});
+                            });*/ //There's so few pawn moves, 
+                                  //it's probably faster to do by hand
+    return moves;
 }

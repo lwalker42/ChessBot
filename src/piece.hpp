@@ -1,8 +1,6 @@
 #ifndef PIECE_HPP
 #define PIECE_HPP
 
-#include "move.hpp"
-
 
 #define WHITE true
 #define BLACK false
@@ -18,7 +16,6 @@ char to_char(piece_t);
 bool is_empty(piece_t);
 bool get_color(piece_t);
 bool same_color(piece_t, piece_t);
-moves2_t get_piece_moves(piece_t);
 
 
 #endif
