@@ -18,7 +18,7 @@ class Board {
         Board(Board&);
         std::string to_string();
         board_t get_board();
-        piece_t move_piece(int, int, int = -1, int = -1);
+        piece_t move_piece(int, int, int = -1, int = -1, piece_t = __);
         piece_t move_piece(int, int, Move);
         piece_t move_piece(Pos, int = -1, int = -1);
         piece_t move_piece(Pos, Move);

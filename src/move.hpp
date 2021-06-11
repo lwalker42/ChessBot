@@ -5,11 +5,13 @@
 #include <vector>
 
 #include "row_col.hpp"
-
+#include "piece.hpp"
 
 class Move : public Row_Col {
     public:
-        Move(int r, int c) : Row_Col(r, c){};
+        piece_t new_piece;
+        Move(int r, int c) : Row_Col(r, c) {new_piece = __;};
+        Move(int r, int c, piece_t p) : Row_Col(r, c) {new_piece = p;};
 };
 
 typedef Move M;

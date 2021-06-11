@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "piece.hpp"
+#include "piece_util.hpp"
 #include "pos.hpp"
 #include "move.hpp"
 #include "pos_move.hpp"
@@ -37,20 +38,22 @@ board_t Board::get_board() {
     return board;
 }
 
-piece_t Board::move_piece(int r1, int c1, int r2, int c2) {
-    if (!on_board(r1, c1)) return __;
+piece_t Board::move_piece(int r1, int c1, int r2, int c2, piece_t new_p) {
+    if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
 
-    piece_t p = board[r1][c1];
+    piece_t p = board[r1][c1];          //Initial pos is on board so move it to...
     if (p == __) return p;
     board[r1][c1] = __;
-    if (on_board(r2, c2)) {
+
+    if (on_board(r2, c2)) {             //If 2nd pos is on board move it there
+        p = (new_p == __) ? p : new_p;  //If a new piece is specified, replace it (promotion)
         board[r2][c2] = p;
     }
     return p;
 }
 
 piece_t Board::move_piece(int r, int c, Move m) {
-    return move_piece(r, c, r + m.r, c + m.c);
+    return move_piece(r, c, r + m.r, c + m.c, m.new_piece);
 }
 
 piece_t Board::move_piece(Pos p, int r, int c) {
@@ -58,7 +61,7 @@ piece_t Board::move_piece(Pos p, int r, int c) {
 }
 
 piece_t Board::move_piece(Pos p, Move m) {
-    return move_piece(p.r, p.c, p.r + m.r, p.c + m.c);
+    return move_piece(p.r, p.c, p.r + m.r, p.c + m.c, m.new_piece);
 }
 
 piece_t Board::move_piece(Pos_Move pm) {
