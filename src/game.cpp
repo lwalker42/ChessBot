@@ -44,7 +44,7 @@ bool Game::valid_move(Pos_Move pm) {
     if (!on_board(p)) return false;     //Initial piece is on board
     if (!on_board(p + m)) return false; //Target location is on board
 
-    piece_t piece = board.get_board()[p.r][p.c];
+    piece_t piece = board[p];
     if (is_empty(piece)) return false;  //Piece is non-empty
     if (get_color(piece) != turn) return false; //Piece is the current player's piece
 
