@@ -60,7 +60,7 @@ moves2_t get_pawn_moves(piece_t p, Special_Move sm) {
     case PAWN_STARTING:
         moves = pawn_first_moves[color];
         break;
-    case PAWN_CAPTURE:
+    case CAPTURE_ONLY:
         moves = pawn_capture_moves[color];
         break;
     default:

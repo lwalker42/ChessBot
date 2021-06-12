@@ -25,10 +25,10 @@ class Board {
         piece_t move_piece(Pos, Move);
         piece_t move_piece(Pos_Move);
 
-        moves_t get_moves(int, int) const;
-        moves_t get_moves(Pos) const;
-        moves2_t get_moves_lists(int, int) const;
-        moves_t filter_moves_lists(int, int, moves2_t) const;
+        moves_t get_moves(int, int, Special_Move = NONE) const;
+        moves_t get_moves(Pos, Special_Move = NONE) const;
+        moves2_t get_moves_lists(int, int, Special_Move = NONE) const;
+        moves_t filter_moves_lists(int, int, moves2_t, Special_Move = NONE) const;
         moves_t filter_check(int, int, moves_t) const;
 };
 

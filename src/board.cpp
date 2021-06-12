@@ -75,22 +75,24 @@ piece_t Board::move_piece(Pos_Move pm) {
 
 
 
-moves_t Board::get_moves(int r, int c) const{
-    moves2_t m_list = get_moves_lists(r, c);
-    moves_t moves = filter_moves_lists(r, c, m_list);
+moves_t Board::get_moves(int r, int c, Special_Move sm) const{
+    moves2_t m_list = get_moves_lists(r, c, sm);
+    moves_t moves = filter_moves_lists(r, c, m_list, sm);
     return moves;
 }
 
-moves_t Board::get_moves(Pos p) const {
-    return get_moves(p.r, p.c);
+moves_t Board::get_moves(Pos p, Special_Move sm) const {
+    return get_moves(p.r, p.c, sm);
 }
 
-moves2_t Board::get_moves_lists(int r, int c) const {
+
+moves2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
     if (!on_board(r, c)) return {};
-    return get_piece_moves(board[r][c]);
+    return get_piece_moves(board[r][c], sm);
 }
 
-moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
+//Filter collision with other pieces and edge of board
+moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm) const {
     //std::cout << "Starting with move list: " << move::to_string(moves_list);
 
     if (!on_board(r, c)) return {};
@@ -98,8 +100,10 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
     if (p1 == __) return {};
 
     moves_t moves;
+    bool capture;
     moves_t::iterator it;
     for (moves_t move_list : moves_list) {
+        capture = false;                                //reset capture flag
         for (it = move_list.begin(); it != move_list.end(); it++) {
             int r_move = r + (*it).r;
             int c_move = c + (*it).c;
@@ -111,9 +115,12 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
                 } else if(same_color(p1, p2)) {         //piece color of location is the same
                     //std::cout << "Friendly piece\n";
                     break;
-                } else {                                //piece is opposite color: capture (i.e. increment iterator then break)
+                } else {                                //piece is opposite color: capture (as long as not a pawn)
                     //std::cout << "Enemy piece\n";
-                    it++;
+                    if (sm != MOVE_ONLY && sm != PAWN_STARTING) {
+                        it++;
+                        capture = true;
+                    }
                     break;
                 }
             } else {                                    //out of bounds
@@ -121,6 +128,7 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list) const {
                 break;
             }
         }
+        if (sm == CAPTURE_ONLY && !capture) continue;
         moves.insert(moves.end(), move_list.begin(), it);
     }
     return moves;

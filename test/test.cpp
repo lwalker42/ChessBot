@@ -8,6 +8,7 @@
 #include "../src/board.hpp"
 #include "../src/move.hpp"
 #include "../src/piece.hpp"
+#include "../src/game.hpp"
 
 TEST_CASE("Test board bounds") {
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -89,7 +90,7 @@ TEST_CASE("Retrieving move lists") {
     const moves_t white_knight = {M(-2, 1), M(-2, -1)};
     moves_t moves = board.get_moves(0, 4);
     CHECK(move::to_string(moves) == move::to_string(black_king));
-    moves = board.get_moves(6, 2);
+    moves = board.get_moves(6, 2, PAWN_STARTING);
     CHECK(move::to_string(moves) == move::to_string(white_pawn));
     moves = board.get_moves(7, 6);
     CHECK(move::to_string(moves) == move::to_string(white_knight));
@@ -112,4 +113,8 @@ TEST_CASE("Retrieving move lists") {
                                  M(0, -1), M(0, -2), M(0, -3)};
     moves = sparse_board.get_moves(3, 3);
     CHECK(move::to_string(moves) == move::to_string(queen_moves));
+}
+
+TEST_CASE("Testing game object") {
+    Game game;
 }
