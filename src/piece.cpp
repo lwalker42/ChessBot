@@ -26,7 +26,7 @@ bool get_color(piece_t p) {
 }
 
 bool same_color(piece_t p1, piece_t p2) {
-    return p1 * p2 > 0;
+    return (p1 > 0) == (p2 > 0);
 }
 
 bool is_pawn(piece_t p) {

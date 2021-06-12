@@ -23,11 +23,11 @@ Board::Board(Board &b) {
     board = b.board;
 }
 
-piece_t Board::operator[](Pos p) {
+piece_t Board::operator[](Pos p) const {
     return board[p.r][p.c];
 }
 
-std::string Board::to_string() {
+std::string Board::to_string() const {
     std::string str;
     for(int i = 0; i < BOARD_SIZE; i++) {
         for(int j = 0; j < BOARD_SIZE; j++) {
@@ -38,7 +38,7 @@ std::string Board::to_string() {
     return str;
 }
 
-board_t Board::get_board() {
+board_t Board::get_board() const {
     return board;
 }
 
@@ -134,6 +134,49 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Mov
     return moves;
 }
 
-moves_t Board::filter_check(int r1, int c1, moves_t moves) const {
-    return moves;
+Pos Board::get_king_pos(bool color) const {
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (board[i][j] == (color ? WK : BK))
+                return Pos(i, j);
+        }
+    }
+    return Pos(-1, -1);
+}
+
+//in_check helper
+bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, moves2_t moves_lists) const {
+    for (moves_t moves : moves_lists) {
+        for (Move m : moves) {
+            if (!on_board(p+m)) break;          //If off board, go to next move list
+
+            piece_t piece = (*this)[p+m];
+            if (piece == __) continue;          //Space is empty so keep searching
+
+            for (piece_t check_piece : pieces) {//There's a piece there; see if it's one we're looking for
+                if (piece == check_piece) {
+                    return true;
+                }
+                break;                          //There's a different piece there; go to next move list
+            }
+        }
+    }
+    return false;
+}
+
+bool Board::in_check(bool color) const {
+    Pos p = get_king_pos(color);
+    if (!on_board(p)) return false;
+
+    std::vector<piece_t> pieces;
+    if (color) pieces = {BQ, BR, BB, BN, BK, BP};
+    else pieces = {WQ, WR, WB, WN, WK, WP};
+
+    if (check_for_piece(p, {pieces[0], pieces[1]}, rook_moves)
+     || check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves)
+     || check_for_piece(p, {pieces[3]}, knight_moves)
+     || check_for_piece(p, {pieces[4]}, king_moves)
+     || check_for_piece(p, {pieces[5]}, pawn_moves[!color]))
+        return true;
+    return false;
 }
