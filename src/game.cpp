@@ -38,6 +38,7 @@ void Game::play_game() {
 
 }
 
+
 bool Game::valid_move(Pos_Move pm) {
     Pos p = pm.pos;
     Move m = pm.move;
@@ -48,27 +49,37 @@ bool Game::valid_move(Pos_Move pm) {
     if (is_empty(piece)) return false;  //Check that piece is non-empty
     if (get_color(piece) != turn) return false; //Check that piece is the current player's piece
 
-    moves_t moves = get_moves(p, piece);
-    if (std::find(moves.begin(), moves.end(), m) == moves.end()) return false;  //Check if move is a valid move
-
-    return true;
+    pos_moves_t moves = get_moves(p, piece);
+    return std::any_of(moves.begin(), moves.end(), 
+           [&m](Pos_Move temp) -> bool {return temp.move == m;});   //Check if move is a valid move
 }
 
 
-moves_t Game::get_moves(int r, int c, piece_t piece) {
-    moves_t moves;
-    if (is_pawn_first(r, c, piece)) {
-        moves = board.get_moves(r, c, PAWN_STARTING);
-    } else if (is_pawn(piece)) {
-        moves = board.get_moves(r, c, MOVE_ONLY);
-        moves_t moves2 = board.get_moves(r, c, CAPTURE_ONLY);
-        moves.insert(moves.end(), moves2.begin(), moves2.end());
-    } else {
+pos_moves_t Game::get_moves(int r, int c, piece_t piece) {
+    pos_moves_t moves;
+
+    if (is_pawn(piece)) {                                           //If pawn
+        if (is_pawn_first(r, c, piece)) {                                  //First get non-capturing moves
+            moves = board.get_moves(r, c, PAWN_STARTING);           //Move 1 or 2
+        } else {
+            moves = board.get_moves(r, c, MOVE_ONLY);               //Move 1
+        }
+        pos_moves_t moves2 = board.get_moves(r, c, CAPTURE_ONLY);   //Then get capturing moves
+        moves.insert(moves.end(), moves2.begin(), moves2.end());    //TODO Then handle promotion
+    }                                                               //TODO case on king and rook for castling
+    else {
         moves = board.get_moves(r, c);
     }
-    return moves;
+
+    return filter_check(r, c, moves);
 }
 
-moves_t Game::get_moves(Pos p, piece_t piece) {
+pos_moves_t Game::get_moves(Pos p, piece_t piece) {
     return get_moves(p.r, p.c, piece);
+}
+
+
+
+pos_moves_t Game::filter_check(int r, int c, pos_moves_t moves) {
+    return moves;
 }

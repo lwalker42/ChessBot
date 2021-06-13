@@ -71,7 +71,7 @@ piece_t Board::move_piece(Pos p, Move m) {
 }
 
 piece_t Board::move_piece(Pos_Move pm) {
-    piece_t piece = move_piece(pm.pos.r, pm.pos.c, pm.move.r, pm.move.c, pm.move.new_piece);
+    piece_t piece = move_piece(pm.pos.r, pm.pos.c, pm.pos.r + pm.move.r, pm.pos.c + pm.move.c, pm.move.new_piece);
     if (pm.next) move_piece(*(pm.next));
     return piece;
 }

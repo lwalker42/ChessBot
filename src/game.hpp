@@ -18,8 +18,9 @@ class Game {
         void play_game();
 
         bool valid_move(Pos_Move);
-        moves_t get_moves(int, int, piece_t);
-        moves_t get_moves(Pos, piece_t);
+        pos_moves_t get_moves(int, int, piece_t);
+        pos_moves_t get_moves(Pos, piece_t);
+        pos_moves_t filter_check(int, int, pos_moves_t);
 };
 
 #endif
