@@ -132,10 +132,13 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
         }
         if (sm == CAPTURE_ONLY) {
             if (capture) moves.push_back(Pos_Move(Pos(r, c), *(it-1)));
-            continue;
         } else {
-            std::transform(move_list.begin(), it, moves.end(), //Convert move to pos_move
-            [r, c](Move m) -> Pos_Move {return Pos_Move(Pos(r, c), m);});
+            moves_t::iterator valid;
+            for (valid = move_list.begin(); valid != it; valid++) {
+                moves.push_back(Pos_Move(Pos(r, c), *valid));
+            }
+            //std::transform(move_list.begin(), it, moves.end(), //Convert move to pos_move
+            //[&r, &c](Move m) -> Pos_Move {return Pos_Move(Pos(r, c), m);});
         }
         
     }

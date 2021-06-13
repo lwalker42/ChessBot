@@ -1,6 +1,7 @@
 #include <string>
 
 #include "move.hpp"
+#include "pos_move.hpp"
 
 namespace move{
 
@@ -20,6 +21,16 @@ namespace move{
             s.append(move::to_string(moves));
         }
         s += "\n";
+        return s;
+    }
+
+    std::string to_string(pos_moves_t moves) {
+        std::string s;
+        for (Pos_Move m : moves) {
+            s += (m.move).to_string();
+            s += ", ";
+        }
+        if (!s.empty()) s += "\n";
         return s;
     }
 

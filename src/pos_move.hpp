@@ -21,4 +21,8 @@ class Pos_Move : public std::pair<Pos, Move> {
 typedef Pos_Move PM;
 typedef std::vector<Pos_Move> pos_moves_t;
 
+namespace move {
+    std::string to_string(pos_moves_t); //Implemented in move.cpp
+};
+
 #endif

@@ -7,6 +7,7 @@
 #include "../src/util.hpp"
 #include "../src/board.hpp"
 #include "../src/move.hpp"
+#include "../src/pos_move.hpp"
 #include "../src/piece.hpp"
 #include "../src/game.hpp"
 
@@ -88,7 +89,7 @@ TEST_CASE("Retrieving move lists") {
     const moves_t black_king = {};
     const moves_t white_pawn = {M(-1, 0), M(-2, 0)};
     const moves_t white_knight = {M(-2, 1), M(-2, -1)};
-    moves_t moves = board.get_moves(0, 4);
+    pos_moves_t moves = board.get_moves(0, 4);
     CHECK(move::to_string(moves) == move::to_string(black_king));
     moves = board.get_moves(6, 2, PAWN_STARTING);
     CHECK(move::to_string(moves) == move::to_string(white_pawn));
