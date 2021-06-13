@@ -18,6 +18,7 @@ bool get_color(piece_t);
 bool same_color(piece_t, piece_t);
 bool is_pawn(piece_t);
 bool is_king(piece_t);
+bool is_rook(piece_t);
 
 
 #endif
