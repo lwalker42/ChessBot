@@ -33,6 +33,10 @@ bool is_pawn(piece_t p) {
     return abs(p) == WP;
 }
 
+bool is_king(piece_t p) {
+    return abs(p) == WK;
+}
+
 moves2_t get_piece_moves(piece_t p, Special_Move sm) {
     switch(abs(p)) {
         case WK:
