@@ -11,7 +11,7 @@ enum Special_Move {
     NONE,
     MOVE_ONLY,
     PAWN_STARTING,
-    CAPTURE_ONLY,   //currently only works for pawns
+    CAPTURE_ONLY,
     CASTLE
 };
 

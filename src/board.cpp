@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #include "piece.hpp"
 #include "piece_util.hpp"
@@ -70,18 +71,19 @@ piece_t Board::move_piece(Pos p, Move m) {
 }
 
 piece_t Board::move_piece(Pos_Move pm) {
-    return move_piece(pm.pos, pm.move);
+    piece_t piece = move_piece(pm.pos.r, pm.pos.c, pm.move.r, pm.move.c, pm.move.new_piece);
+    if (pm.next) move_piece(*(pm.next));
+    return piece;
 }
 
 
-
-moves_t Board::get_moves(int r, int c, Special_Move sm) const{
+pos_moves_t Board::get_moves(int r, int c, Special_Move sm) const {
     moves2_t m_list = get_moves_lists(r, c, sm);
-    moves_t moves = filter_moves_lists(r, c, m_list, sm);
+    pos_moves_t moves = filter_moves_lists(r, c, m_list, sm);
     return moves;
 }
 
-moves_t Board::get_moves(Pos p, Special_Move sm) const {
+pos_moves_t Board::get_moves(Pos p, Special_Move sm) const {
     return get_moves(p.r, p.c, sm);
 }
 
@@ -92,14 +94,14 @@ moves2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
 }
 
 //Filter collision with other pieces and edge of board
-moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm) const {
+pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm) const {
     //std::cout << "Starting with move list: " << move::to_string(moves_list);
 
     if (!on_board(r, c)) return {};
     piece_t p1 = board[r][c];
     if (p1 == __) return {};
 
-    moves_t moves;
+    pos_moves_t moves;
     bool capture;
     moves_t::iterator it;
     for (moves_t move_list : moves_list) {
@@ -128,8 +130,14 @@ moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Mov
                 break;
             }
         }
-        if (sm == CAPTURE_ONLY && !capture) continue;
-        moves.insert(moves.end(), move_list.begin(), it);
+        if (sm == CAPTURE_ONLY) {
+            if (capture) moves.push_back(Pos_Move(Pos(r, c), *(it-1)));
+            continue;
+        } else {
+            std::transform(move_list.begin(), it, moves.end(), //Convert move to pos_move
+            [r, c](Move m) -> Pos_Move {return Pos_Move(Pos(r, c), m);});
+        }
+        
     }
     return moves;
 }
