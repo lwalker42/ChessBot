@@ -132,7 +132,7 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
             }
         }
         if (sm == CAPTURE_ONLY) {
-            if (capture) moves.push_back(Pos_Move(Pos(r, c), *(it-1)));
+            if (capture) moves.push_back(Pos_Move(Pos(r, c), *(--it)));
         } else {
             moves_t::iterator valid;
             for (valid = move_list.begin(); valid != it; valid++) {

@@ -30,18 +30,19 @@ void Game::print_game() {
 void Game::play_game() {
     while(!finished) {
         if(display) print_game();
-        Pos_Move pm = turn ? get_move(CIN_INPUT) : get_move(CIN_INPUT);
+        Pos_Move pm = turn ? get_input(CIN_INPUT) : get_input(CIN_INPUT);
         if (!valid_move(pm)) {
             std::cout << "\n\nInvalid move\n";
             continue;
-        } else {
-            handle_castle(pm);
-            board.move_piece(pm);
-            turn = !turn;
-            check = board.in_check(turn);
         }
+        handle_castle(pm);
+        board.move_piece(pm);
+        turn = !turn;
+        check = board.in_check(turn);
+        if (check) in_checkmate();
     }
-
+    std::cout << "\n" << board.to_string();
+    std::cout << "Game over.  " << (turn ? "Black" : "White") << " wins!\n";
 }
 
 
@@ -93,13 +94,29 @@ bool Game::try_move_check(Pos_Move move) {
 }
 
 pos_moves_t Game::filter_check(pos_moves_t moves) {
-    std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "\n" << move::to_string(moves) << "\n";
     moves.erase(std::remove_if(moves.begin(), 
                                moves.end(), 
                                [this](Pos_Move m){return this->try_move_check(m);}), moves.end());
     
-    std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "\n" << move::to_string(moves) << "\n";
     return moves;
+}
+
+
+bool Game::in_checkmate() {
+    board_t b = board.get_board();
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j <BOARD_SIZE; j++) {
+            piece_t p = b[i][j];
+            if (is_empty(p)) continue;
+            if (get_color(p) == turn) {
+                if(!get_moves(i, j, p).empty()) return false;
+            }
+        }
+    }
+    finished = true;
+    return true;
 }
 
 

@@ -4,7 +4,7 @@
 
 #include "user_input.hpp"
 
-Pos_Move get_move(int input_type) {
+Pos_Move get_input(int input_type) {
     switch (input_type) {
     case CIN_INPUT: {
         return get_cin_input();
