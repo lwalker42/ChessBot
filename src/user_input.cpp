@@ -17,11 +17,14 @@ Pos_Move get_move(int input_type) {
     }
 }
 
+//awful way to read user input but want to test other parts
 Pos_Move get_cin_input() {
-    //awful way to read user input but want to test other parts
     std::string str;
-    std::cout << "Input your move: Inital_RowInitial_ColNew_RowNew_Col (no spaces)\n"; 
+    std::cout << "Input your move: Inital_Row Initial_Col New_Row New_Col (no spaces)\n"; 
     std::cin >> str;
     Pos p (str[0] - 48, str[1] - 48);
-    return {p, Move(str[2] - 48 - p.r, str[3] - 48 - p.c)};
+    if (str.length() > 2)
+        return {p, Move(str[2]-48-p.r, str[3]-48-p.c)};
+    else 
+        return {p, Move(0, 0)};     //See moves for a piece
 }

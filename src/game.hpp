@@ -10,7 +10,7 @@
 class Game {
     private:
         Board board;
-        bool turn, white_queenside, white_kingside, black_queenside, black_kingside, finished;
+        bool turn, check, white_queenside, white_kingside, black_queenside, black_kingside, finished, display;
         bool try_move_check(Pos_Move);
 
     public:

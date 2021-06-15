@@ -12,21 +12,24 @@
 Game::Game() {
     Board board;
     turn = WHITE;
+    check = false;
     white_queenside = true;
     white_kingside = true;
     black_queenside = true;
     black_kingside = true;
     finished = false;
+    display = true;
 }
 
 void Game::print_game() {
     std::cout << std::endl << board.to_string();
     std::cout << (turn ? "White's turn\n" : "Black's turn\n");
+    std::cout << (check ? "You are in check!\n" : "");
 }
 
 void Game::play_game() {
     while(!finished) {
-        print_game();
+        if(display) print_game();
         Pos_Move pm = turn ? get_move(CIN_INPUT) : get_move(CIN_INPUT);
         if (!valid_move(pm)) {
             std::cout << "\n\nInvalid move\n";
@@ -34,6 +37,7 @@ void Game::play_game() {
         } else {
             board.move_piece(pm);
             turn = !turn;
+            check = board.in_check(turn);
         }
     }
 

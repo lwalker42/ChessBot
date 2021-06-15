@@ -31,6 +31,7 @@ piece_t Board::operator[](Pos p) const {
 std::string Board::to_string() const {
     std::string str;
     for(int i = 0; i < BOARD_SIZE; i++) {
+        str+= " ";
         for(int j = 0; j < BOARD_SIZE; j++) {
             str += to_char(board[i][j]);
         }
