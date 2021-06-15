@@ -7,6 +7,7 @@
 #include "game.hpp"
 #include "user_input.hpp"
 #include "pos_move.hpp"
+#include "move.hpp"
 
 Game::Game() {
     Board board;
@@ -71,7 +72,7 @@ pos_moves_t Game::get_moves(int r, int c, piece_t piece) {
         moves = board.get_moves(r, c);
     }
 
-    return filter_check(r, c, moves);
+    return filter_check(moves);
 }
 
 pos_moves_t Game::get_moves(Pos p, piece_t piece) {
@@ -79,7 +80,19 @@ pos_moves_t Game::get_moves(Pos p, piece_t piece) {
 }
 
 
+//filter_check helper: remove if move puts current player in check
+bool Game::try_move_check(Pos_Move move) {
+    Board b(board);
+    b.move_piece(move);
+    return b.in_check(turn);
+}
 
-pos_moves_t Game::filter_check(int r, int c, pos_moves_t moves) {
+pos_moves_t Game::filter_check(pos_moves_t moves) {
+    std::cout << "\n" << move::to_string(moves) << "\n";
+    moves.erase(std::remove_if(moves.begin(), 
+                               moves.end(), 
+                               [this](Pos_Move m){return this->try_move_check(m);}), moves.end());
+    
+    std::cout << "\n" << move::to_string(moves) << "\n";
     return moves;
 }

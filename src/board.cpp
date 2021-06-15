@@ -168,8 +168,8 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, moves2_t moves_l
                 if (piece == check_piece) {
                     return true;
                 }
-                break;                          //There's a different piece there; go to next move list
             }
+            break;                              //There's a different piece there; go to next move list
         }
     }
     return false;
@@ -187,7 +187,7 @@ bool Board::in_check(bool color) const {
      || check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves)
      || check_for_piece(p, {pieces[3]}, knight_moves)
      || check_for_piece(p, {pieces[4]}, king_moves)
-     || check_for_piece(p, {pieces[5]}, pawn_moves[!color]))
+     || check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color]))    //White is true==1 but index is [0]
         return true;
     return false;
 }

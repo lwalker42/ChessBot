@@ -11,6 +11,7 @@ class Game {
     private:
         Board board;
         bool turn, white_queenside, white_kingside, black_queenside, black_kingside, finished;
+        bool try_move_check(Pos_Move);
 
     public:
         Game();
@@ -20,7 +21,7 @@ class Game {
         bool valid_move(Pos_Move);
         pos_moves_t get_moves(int, int, piece_t);
         pos_moves_t get_moves(Pos, piece_t);
-        pos_moves_t filter_check(int, int, pos_moves_t);
+        pos_moves_t filter_check(pos_moves_t);
 };
 
 #endif
