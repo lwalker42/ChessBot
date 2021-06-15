@@ -12,6 +12,7 @@ class Game {
         Board board;
         bool turn, check, white_queenside, white_kingside, black_queenside, black_kingside, finished, display;
         bool try_move_check(Pos_Move);
+        void handle_castle(Pos_Move);
 
     public:
         Game();

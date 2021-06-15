@@ -35,6 +35,7 @@ void Game::play_game() {
             std::cout << "\n\nInvalid move\n";
             continue;
         } else {
+            handle_castle(pm);
             board.move_piece(pm);
             turn = !turn;
             check = board.in_check(turn);
@@ -99,4 +100,26 @@ pos_moves_t Game::filter_check(pos_moves_t moves) {
     
     std::cout << "\n" << move::to_string(moves) << "\n";
     return moves;
+}
+
+
+void Game::handle_castle(Pos_Move move) {
+    piece_t p = board[move.pos];
+    bool c = get_color(p);
+    if (c ? !white_kingside && !white_queenside
+          : !black_kingside && !black_queenside) return;    //If castling ins't possible, skip
+          
+    if (is_king(p)) {
+        if (c) {
+            white_kingside = false;
+            white_queenside = false;
+        } else {
+            black_kingside = false;
+            black_queenside = false;
+        }
+    } else if (is_kingside(move.pos, p)) {
+        (c ? white_kingside : black_kingside) = false;
+    } else if (is_queenside(move.pos, p)) {
+        (c ? white_queenside : black_queenside) = false;
+    }
 }
