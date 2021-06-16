@@ -4,6 +4,8 @@
 #include <array>
 #include "piece.hpp"
 #include "move.hpp"
+#include "pos.hpp"
+#include "pos_move.hpp"
 
 #define BOARD_SIZE 8
 
@@ -12,7 +14,8 @@ enum Special_Move {
     MOVE_ONLY,
     PAWN_STARTING,
     CAPTURE_ONLY,
-    CASTLE
+    KINGSIDE,
+    QUEENSIDE
 };
 
 typedef std::array<std::array<piece_t, BOARD_SIZE>, BOARD_SIZE> board_t;
@@ -80,5 +83,9 @@ const moves2_t pawn_moves[] = {{{M(-1, 0)}},  {{M(1, 0)}}};
 const moves2_t pawn_capture_moves[] = {{{M(-1, -1)}, {M(-1, 1)}},  {{M(1, 1)}, {M(1, -1)}}};
 const moves2_t promotions[] = {{{M(0, 0, WQ), M(0, 0, WR), M(0, 0, WB), M(0, 0, WN)}},
                                {{M(0, 0, BQ), M(0, 0, BR), M(0, 0, BB), M(0, 0, BN)}}};
+const pos_moves_t kingside[] = {{PM(P(7, 4), M(0, 1)), PM(P(7, 4), M(0, 2), new PM(P(7, 7), M(0, -2)))},
+                                {PM(P(0, 4), M(0, 2)), PM(P(0, 4), M(0, 2), new PM(P(0, 7), M(0, -2)))}};
+const pos_moves_t queenside[] = {{PM(P(7, 4), M(0, -1)), PM(P(7, 4), M(0, -2), new PM(P(7, 0), M(0, 3)))},
+                                 {PM(P(0, 4), M(0, -1)), PM(P(0, 4), M(0, -2), new PM(P(0, 0), M(0, 3)))}};
 
 #endif

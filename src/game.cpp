@@ -85,6 +85,11 @@ pos_moves_t Game::get_moves(int r, int c, piece_t piece) {
                            : board.get_moves(r, c, CAPTURE_ONLY));   //Then get capturing moves
         moves.insert(moves.end(), moves2.begin(), moves2.end());
                                                                     //TODO Then handle promotion
+    } else if(is_king(piece)) {
+        moves = board.get_moves(r, c);
+        bool col = get_color(piece);
+        if (try_castle(col, KINGSIDE)) moves.push_back(kingside[!col][1]);
+        if (try_castle(col, QUEENSIDE)) moves.push_back(queenside[!col][1]);
     } else {
         moves = board.get_moves(r, c);
     }
@@ -113,6 +118,27 @@ pos_moves_t Game::filter_check(pos_moves_t moves) {
     return moves;
 }
 
+
+bool Game::try_castle(bool color, Special_Move side) {
+    if (board.in_check(color)) return false;
+    board_t b = board.get_board();
+    if (side == KINGSIDE) {
+        //std::cout << "Trying kingside\n";
+        return (color ? white_kingside : black_kingside)
+            && b[color ? 7 : 0][5] == __
+            && b[color ? 7 : 0][6] == __
+            && !try_move_check(kingside[!color][0])
+            && !try_move_check(kingside[!color][1]);
+    } else {
+        //std::cout << "Trying queenside\n";
+        return (color ? white_queenside : black_queenside)
+            && b[color ? 7 : 0][3] == __
+            && b[color ? 7 : 0][2] == __
+            && b[color ? 7 : 0][1] == __
+            && !try_move_check(queenside[!color][0])
+            && !try_move_check(queenside[!color][1]);
+    }
+}
 
 bool Game::in_checkmate() {
     board_t b = board.get_board();

@@ -15,5 +15,6 @@ class Pos : public Row_Col {
             return Pos(r + m.r, c + m.c);
         }
 };
+typedef Pos P;
 
 #endif

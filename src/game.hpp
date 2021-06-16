@@ -26,6 +26,7 @@ class Game {
         pos_moves_t get_moves(int, int, piece_t);
         pos_moves_t get_moves(Pos, piece_t);
         pos_moves_t filter_check(pos_moves_t);
+        bool try_castle(bool, Special_Move);
         bool in_checkmate();
 };
 
