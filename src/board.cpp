@@ -162,6 +162,17 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
         }
         
     }
+    if (is_pawn_promotion(r, c, p1)) {
+        pos_moves_t promotions_moves;
+        for (Pos_Move move : moves) {
+            for (Move m : promotions[!get_color(p1)][0]) {
+                Move new_m = move.move;
+                new_m.new_piece = m.new_piece;
+                promotions_moves.push_back(Pos_Move(move.pos, new_m, move.next));
+            }
+        }
+        return promotions_moves;
+    }
     return moves;
 }
 

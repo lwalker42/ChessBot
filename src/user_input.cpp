@@ -23,8 +23,11 @@ Pos_Move get_cin_input() {
     std::cout << "Input your move: Inital_Row Initial_Col New_Row New_Col (no spaces)\n"; 
     std::cin >> str;
     Pos p (str[0] - 48, str[1] - 48);
-    if (str.length() > 2)
-        return {p, Move(str[2]-48-p.r, str[3]-48-p.c)};
-    else 
+    if (str.length() > 2) {
+        Pos_Move pm = {p, Move(str[2]-48-p.r, str[3]-48-p.c)};
+        if (str.length() > 4) pm.move.new_piece = (piece_t) str[4];
+        return pm;
+    } else {
         return {p, Move(0, 0)};     //See moves for a piece
+    }
 }

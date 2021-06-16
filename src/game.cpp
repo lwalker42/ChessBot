@@ -62,7 +62,10 @@ Pos_Move *Game::valid_move(Pos_Move pm) {
     pos_moves_t moves = get_moves(p, piece);
     //for (auto move : moves) std::cout << move.to_string() << "\n";
     auto it = std::find_if(moves.begin(), moves.end(), 
-                           [&m](Pos_Move temp) -> bool {return (temp.move) == m;});   //Check if move is a valid move
+                           [&m](Pos_Move temp) -> bool {return (temp.move.r) == m.r 
+                                                            && (temp.move.c) == m.c 
+                                                            && (m.new_piece == __ 
+                                                            ||  abs(temp.move.new_piece) == m.new_piece);});   //Check if move is a valid move
     Pos_Move *move = (it == moves.end()) ? NULL : new Pos_Move((*it));
     return move;
 }
