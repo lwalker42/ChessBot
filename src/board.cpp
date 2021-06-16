@@ -72,20 +72,21 @@ piece_t Board::move_piece(Pos p, Move m) {
 }
 
 piece_t Board::move_piece(Pos_Move pm) {
+    //std::cout << pm.to_string() << "\n";
     piece_t piece = move_piece(pm.pos.r, pm.pos.c, pm.pos.r + pm.move.r, pm.pos.c + pm.move.c, pm.move.new_piece);
     if (pm.next) move_piece(*(pm.next));
     return piece;
 }
 
 
-pos_moves_t Board::get_moves(int r, int c, Special_Move sm) const {
+pos_moves_t Board::get_moves(int r, int c, Special_Move sm, Pos ep) const {
     moves2_t m_list = get_moves_lists(r, c, sm);
-    pos_moves_t moves = filter_moves_lists(r, c, m_list, sm);
+    pos_moves_t moves = filter_moves_lists(r, c, m_list, sm, ep);
     return moves;
 }
 
-pos_moves_t Board::get_moves(Pos p, Special_Move sm) const {
-    return get_moves(p.r, p.c, sm);
+pos_moves_t Board::get_moves(Pos p, Special_Move sm, Pos ep) const {
+    return get_moves(p.r, p.c, sm, ep);
 }
 
 
@@ -95,7 +96,7 @@ moves2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
 }
 
 //Filter collision with other pieces and edge of board
-pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm) const {
+pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm, Pos ep) const {
     //std::cout << "Starting with move list: " << move::to_string(moves_list);
 
     if (!on_board(r, c)) return {};
@@ -104,9 +105,11 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
 
     pos_moves_t moves;
     bool capture;
+    bool en_passant;
     moves_t::iterator it;
     for (moves_t move_list : moves_list) {
         capture = false;                                //reset capture flag
+        en_passant = false;                             //reset en passant flag
         for (it = move_list.begin(); it != move_list.end(); it++) {
             int r_move = r + (*it).r;
             int c_move = c + (*it).c;
@@ -114,6 +117,15 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
                 piece_t p2 = board[r_move][c_move];
                 if(p2 == __) {                          //piece is empty
                     //std::cout << "Empty space\n";
+                    if (sm == CAPTURE_ONLY && on_board(ep)) {
+                        int offset = get_color(p1) ? -1 : 1;
+                        if (r_move == ep.r + offset && c_move == ep.c) {
+                            //std::cout << "En passant!\n";
+                            it++;
+                            en_passant = true;
+                            break;
+                        }
+                    }
                     continue;
                 } else if(same_color(p1, p2)) {         //piece color of location is the same
                     //std::cout << "Friendly piece\n";
@@ -131,8 +143,15 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
                 break;
             }
         }
+
         if (sm == CAPTURE_ONLY) {
-            if (capture) moves.push_back(Pos_Move(Pos(r, c), *(--it)));
+            if (en_passant) {
+                Pos_Move *remove_pawn = new Pos_Move(ep, Move(BOARD_SIZE, BOARD_SIZE));
+                Pos_Move *move = new Pos_Move(Pos(r, c), *(--it), remove_pawn);
+                moves.push_back(*move);
+            } else if (capture) {
+                moves.push_back(Pos_Move(Pos(r, c), *(--it)));
+            }
         } else {
             moves_t::iterator valid;
             for (valid = move_list.begin(); valid != it; valid++) {

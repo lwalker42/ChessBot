@@ -1,23 +1,25 @@
 #ifndef POS_MOVE_HPP
 #define POS_MOVE_HPP
 
-#include <utility>  //std::pair
 #include <string>
 #include <vector>
 
 #include "move.hpp"
 #include "pos.hpp"
 
-class Pos_Move : public std::pair<Pos, Move> {
+class Pos_Move {
     public:
         Pos pos;
         Move move;
         Pos_Move *next = NULL;
-        Pos_Move(Pos p, Move m) : std::pair<Pos, Move>(p, m), pos(first), move(second) {};
+        Pos_Move(Pos p, Move m, Pos_Move* n = NULL) : pos(p), move(m), next(n) {};
+        Pos_Move(int r, int c, Move m, Pos_Move* n = NULL) : move(m), next(n) {Pos *p = new Pos(r, c); pos = *p;}
+        Pos_Move(const Pos_Move &pm) : Pos_Move(pm.pos, pm.move, pm.next) {};
         std::string to_string() {
             return "Pos: " + pos.to_string() + ", Move: " + move.to_string();
         }
 };
+
 typedef Pos_Move PM;
 typedef std::vector<Pos_Move> pos_moves_t;
 

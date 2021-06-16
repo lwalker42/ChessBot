@@ -13,11 +13,12 @@ Game::Game() {
     Board board;
     turn = WHITE;
     check = false;
+    finished = false;
+    en_passant = false;
     white_queenside = true;
     white_kingside = true;
     black_queenside = true;
     black_kingside = true;
-    finished = false;
     display = true;
 }
 
@@ -31,12 +32,14 @@ void Game::play_game() {
     while(!finished) {
         if(display) print_game();
         Pos_Move pm = turn ? get_input(CIN_INPUT) : get_input(CIN_INPUT);
-        if (!valid_move(pm)) {
+        Pos_Move *ptr = valid_move(pm);
+        if (!ptr) {
             std::cout << "\n\nInvalid move\n";
             continue;
         }
         handle_castle(pm);
-        board.move_piece(pm);
+        handle_en_passant(pm);
+        board.move_piece(*ptr);
         turn = !turn;
         check = board.in_check(turn);
         if (check) in_checkmate();
@@ -46,19 +49,22 @@ void Game::play_game() {
 }
 
 
-bool Game::valid_move(Pos_Move pm) {
+Pos_Move *Game::valid_move(Pos_Move pm) {
     Pos p = pm.pos;
     Move m = pm.move;
-    if (!on_board(p)) return false;     //Initial piece is on board
-    if (!on_board(p + m)) return false; //Target location is on board
+    if (!on_board(p)) return NULL;      //Initial piece is on board
+    if (!on_board(p + m)) return NULL;  //Target location is on board
 
     piece_t piece = board[p];
-    if (is_empty(piece)) return false;  //Check that piece is non-empty
-    if (get_color(piece) != turn) return false; //Check that piece is the current player's piece
+    if (is_empty(piece)) return NULL;           //Check that piece is non-empty
+    if (get_color(piece) != turn) return NULL;  //Check that piece is the current player's piece
 
     pos_moves_t moves = get_moves(p, piece);
-    return std::any_of(moves.begin(), moves.end(), 
-           [&m](Pos_Move temp) -> bool {return temp.move == m;});   //Check if move is a valid move
+    //for (auto move : moves) std::cout << move.to_string() << "\n";
+    auto it = std::find_if(moves.begin(), moves.end(), 
+                           [&m](Pos_Move temp) -> bool {return (temp.move) == m;});   //Check if move is a valid move
+    Pos_Move *move = (it == moves.end()) ? NULL : new Pos_Move((*it));
+    return move;
 }
 
 
@@ -66,18 +72,19 @@ pos_moves_t Game::get_moves(int r, int c, piece_t piece) {
     pos_moves_t moves;
 
     if (is_pawn(piece)) {                                           //If pawn
-        if (is_pawn_first(r, c, piece)) {                                  //First get non-capturing moves
+        if (is_pawn_first(r, c, piece)) {                           //First get non-capturing moves
             moves = board.get_moves(r, c, PAWN_STARTING);           //Move 1 or 2
         } else {
             moves = board.get_moves(r, c, MOVE_ONLY);               //Move 1
         }
-        pos_moves_t moves2 = board.get_moves(r, c, CAPTURE_ONLY);   //Then get capturing moves
-        moves.insert(moves.end(), moves2.begin(), moves2.end());    //TODO Then handle promotion
-    }                                                               //TODO case on king and rook for castling
-    else {
+        pos_moves_t moves2 ( en_passant 
+                           ? board.get_moves(r, c, CAPTURE_ONLY, en_passant_pos)  
+                           : board.get_moves(r, c, CAPTURE_ONLY));   //Then get capturing moves
+        moves.insert(moves.end(), moves2.begin(), moves2.end());
+                                                                    //TODO Then handle promotion
+    } else {
         moves = board.get_moves(r, c);
     }
-
     return filter_check(moves);
 }
 
@@ -138,5 +145,15 @@ void Game::handle_castle(Pos_Move move) {
         (c ? white_kingside : black_kingside) = false;
     } else if (is_queenside(move.pos, p)) {
         (c ? white_queenside : black_queenside) = false;
+    }
+}
+
+void Game::handle_en_passant(Pos_Move move) {
+    piece_t p = board[move.pos];
+    if (is_pawn_first(move.pos, p) && abs(move.move.r) > 1) {
+        en_passant = true;
+        en_passant_pos = move.pos + move.move;
+    } else {
+        en_passant = false;
     }
 }
