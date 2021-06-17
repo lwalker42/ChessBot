@@ -4,8 +4,7 @@
 #include <utility>
 
 #include "board.hpp"
-#include "pos_move.hpp"
-#include "pos.hpp"
+#include "move.hpp"
 
 
 class Game {
@@ -13,19 +12,21 @@ class Game {
         Board board;
         Pos en_passant_pos = {-1, -1};
         bool turn, check, white_queenside, white_kingside, black_queenside, black_kingside, finished, display, en_passant;
-        bool try_move_check(Pos_Move);
-        void handle_castle(Pos_Move);
-        void handle_en_passant(Pos_Move);
+        moves_t game_moves;
+        bool try_move_check(Move);
+        void handle_castle(Move);
+        void handle_en_passant(Move);
 
     public:
         Game();
         void print_game();
         void play_game();
+        void make_move(Move);
 
-        Pos_Move *valid_move(Pos_Move);
-        pos_moves_t get_moves(int, int, piece_t);
-        pos_moves_t get_moves(Pos, piece_t);
-        pos_moves_t filter_check(pos_moves_t);
+        bool valid_move(Move&);
+        moves_t get_moves(int, int, piece_t);
+        moves_t get_moves(Pos, piece_t);
+        moves_t filter_check(moves_t);
         bool try_castle(bool, Special_Move);
         bool in_checkmate();
 };

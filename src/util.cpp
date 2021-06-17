@@ -1,6 +1,6 @@
 #include "board_constants.hpp"
 #include "util.hpp"
-#include "pos.hpp"
+#include "type_defs.hpp"
 #include "piece.hpp"
 
 bool on_board(int r, int c) {
@@ -8,7 +8,7 @@ bool on_board(int r, int c) {
 }
 
 bool on_board(Pos p) {
-    return on_board(p.r, p.c);
+    return on_board(p.first, p.second);
 }
 
 bool is_pawn_first(int r, int c, piece_t p) {
@@ -19,7 +19,7 @@ bool is_pawn_first(int r, int c, piece_t p) {
 }
 
 bool is_pawn_first(Pos pos, piece_t p) {
-    return is_pawn_first(pos.r, pos.c, p);
+    return is_pawn_first(pos.first, pos.second, p);
 }
 
 bool is_pawn_promotion(int r, int c, piece_t p) {
@@ -30,7 +30,7 @@ bool is_pawn_promotion(int r, int c, piece_t p) {
 }
 
 bool is_pawn_promotion(Pos pos, piece_t p) {
-    return is_pawn_promotion(pos.r, pos.c, p);
+    return is_pawn_promotion(pos.first, pos.second, p);
 }
 
 bool is_kingside(int r, int c, piece_t p) {
@@ -41,7 +41,7 @@ bool is_kingside(int r, int c, piece_t p) {
 }
 
 bool is_kingside(Pos pos, piece_t p) {
-    return is_kingside(pos.r, pos.c, p);
+    return is_kingside(pos.first, pos.second, p);
 }
 
 bool is_queenside(int r, int c, piece_t p) {
@@ -52,5 +52,9 @@ bool is_queenside(int r, int c, piece_t p) {
 }
 
 bool is_queenside(Pos pos, piece_t p) {
-    return is_queenside(pos.r, pos.c, p);
+    return is_queenside(pos.first, pos.second, p);
+}
+
+Pos operator+(const Pos &p1, const Pos &p2) {
+  return {p1.first + p2.first, p1.second + p2.second};
 }

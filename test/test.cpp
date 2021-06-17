@@ -7,7 +7,6 @@
 #include "../src/util.hpp"
 #include "../src/board.hpp"
 #include "../src/move.hpp"
-#include "../src/pos_move.hpp"
 #include "../src/piece.hpp"
 #include "../src/game.hpp"
 
@@ -86,10 +85,10 @@ const Board sparse_board(_sparse_board);
 
 TEST_CASE("Retrieving move lists") {
     Board board;
-    const moves_t black_king = {};
-    const moves_t white_pawn = {M(-1, 0), M(-2, 0)};
-    const moves_t white_knight = {M(-2, 1), M(-2, -1)};
-    pos_moves_t moves = board.get_moves(0, 4);
+    const diffs_t black_king = {};
+    const diffs_t white_pawn = {P(-1, 0), P(-2, 0)};
+    const diffs_t white_knight = {P(-2, 1), P(-2, -1)};
+    moves_t moves = board.get_moves(0, 4);
     CHECK(move::to_string(moves) == move::to_string(black_king));
     moves = board.get_moves(6, 2, PAWN_STARTING);
     CHECK(move::to_string(moves) == move::to_string(white_pawn));
@@ -104,14 +103,14 @@ TEST_CASE("Retrieving move lists") {
 
         }
     }
-    const moves_t queen_moves = {M(1, 1), M(2, 2), M(3, 3), M(4, 4), 
-                                 M(-1, -1), M(-2, -2), M(-3, -3), 
-                                 M(1, -1), M(2, -2), M(3, -3), 
-                                 M(-1, 1), M(-2, 2), M(-3, 3), 
-                                 M(1, 0), M(2, 0), M(3, 0), M(4, 0), 
-                                 M(-1, 0), M(-2, 0), M(-3, 0), 
-                                 M(0, 1), M(0, 2), M(0, 3), M(0, 4), 
-                                 M(0, -1), M(0, -2), M(0, -3)};
+    const diffs_t queen_moves = {P(1, 1), P(2, 2), P(3, 3), P(4, 4), 
+                                 P(-1, -1), P(-2, -2), P(-3, -3), 
+                                 P(1, -1), P(2, -2), P(3, -3), 
+                                 P(-1, 1), P(-2, 2), P(-3, 3), 
+                                 P(1, 0), P(2, 0), P(3, 0), P(4, 0), 
+                                 P(-1, 0), P(-2, 0), P(-3, 0), 
+                                 P(0, 1), P(0, 2), P(0, 3), P(0, 4), 
+                                 P(0, -1), P(0, -2), P(0, -3)};
     moves = sparse_board.get_moves(3, 3);
     CHECK(move::to_string(moves) == move::to_string(queen_moves));
 }

@@ -5,7 +5,6 @@
 #include "piece.hpp"
 #include "move.hpp"
 #include "piece_util.hpp"
-#include "pos.hpp"
 #include "board_constants.hpp"
 
 using namespace std; 
@@ -41,10 +40,10 @@ bool is_rook(piece_t p) {
     return abs(p) == WR;
 }
 
-moves2_t get_piece_moves(piece_t p, Special_Move sm) {
+diffs2_t get_piece_moves(piece_t p, Special_Move sm) {
     switch(abs(p)) {
         case WK:
-            return king_moves;
+            return get_king_moves(p, sm);
         case WQ:
             return queen_moves;
         case WR:
@@ -61,9 +60,9 @@ moves2_t get_piece_moves(piece_t p, Special_Move sm) {
 }
 
 
-moves2_t get_pawn_moves(piece_t p, Special_Move sm) {
+diffs2_t get_pawn_moves(piece_t p, Special_Move sm) {
     int color = (p > 0) ? 0 : 1;
-    moves2_t moves;
+    diffs2_t moves;
     switch (sm) {
     case PAWN_STARTING:
         moves = pawn_first_moves[color];
@@ -75,13 +74,22 @@ moves2_t get_pawn_moves(piece_t p, Special_Move sm) {
         moves = pawn_moves[color];
         break;
     }
-        /*std::for_each(moves.begin(), 
-                      moves.end(), 
-            [](moves_t &ms) {
-                std::for_each(ms.begin(),
-                              ms.end(), 
-                              [](Move &m){m.r *= -1; m.c *=-1;});
-                            });*/ //There's so few pawn moves, 
-                                  //it's probably faster to do by hand
+    return moves;
+}
+
+
+diffs2_t get_king_moves(piece_t p, Special_Move sm) {
+    diffs2_t moves;
+    switch (sm) {
+    case KINGSIDE:
+        moves = kingside_moves;
+        break;
+    case QUEENSIDE:
+        moves = queenside_moves;
+        break;
+    default:
+        moves = king_moves;
+        break;
+    }
     return moves;
 }

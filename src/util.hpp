@@ -1,7 +1,7 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include "pos.hpp"
+#include "board_constants.hpp"
 #include "piece.hpp"
 
 bool on_board(int, int);
@@ -14,5 +14,6 @@ bool is_kingside(int, int, piece_t = WR);
 bool is_kingside(Pos, piece_t = WR);
 bool is_queenside(int, int, piece_t = WR);
 bool is_queenside(Pos, piece_t = WR);
+Pos operator+(const Pos &, const Pos &);
 
 #endif

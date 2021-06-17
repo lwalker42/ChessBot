@@ -4,9 +4,7 @@
 
 #include "piece.hpp"
 #include "piece_util.hpp"
-#include "pos.hpp"
 #include "move.hpp"
-#include "pos_move.hpp"
 #include "board_constants.hpp"
 #include "board.hpp"
 #include "util.hpp"
@@ -25,7 +23,7 @@ Board::Board(Board &b) {
 }
 
 piece_t Board::operator[](Pos p) const {
-    return board[p.r][p.c];
+    return board[p.first][p.second];
 }
 
 std::string Board::to_string() const {
@@ -45,81 +43,97 @@ board_t Board::get_board() const {
 }
 
 
-piece_t Board::move_piece(int r1, int c1, int r2, int c2, piece_t new_p) {
+piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece_t captured, piece_t promotion) {
     if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
-
-    piece_t p = board[r1][c1];          //Initial pos is on board so move it to...
-    if (p == __) return p;
+    piece_t p = board[r1][c1];          //Initial pos is on board
+    if (p == __) return p;              //Empty so exit
     board[r1][c1] = __;
+    bool col = get_color(p);
+    if (!on_board(r2, c2)) return p;    //Target pos is out of bounds
 
-    if (on_board(r2, c2)) {             //If 2nd pos is on board move it there
-        p = (new_p == __) ? p : new_p;  //If a new piece is specified, replace it (promotion)
-        board[r2][c2] = p;
+    switch (sm) {
+        case EN_PASSANT:
+            board[r2][c2] = p;
+            board[r2+(col ? 1 : -1)][c2] = __;
+            captured = col ? BP : WP;
+            break;
+
+        case PROMOTION:
+            captured = board[r2][c2];
+            board[r2][c2] = promotion;
+            break;
+
+        case KINGSIDE:
+            board[r1][c1+2] = p;
+            board[r1][c1+1] = board[r1][c1+3];
+            board[r1][c1+3] = __;
+            break;
+
+        case QUEENSIDE:
+            board[r1][c1-2] = p;
+            board[r1][c1-1] = board[r1][c1-4];
+            board[r1][c1-4] = __;
+            break;
+
+        case NONE:
+        case MOVE_ONLY:
+        case PAWN_STARTING:
+        case CAPTURE_ONLY:
+        default:
+            captured = board[r2][c2];
+            board[r2][c2] = p;
+            break;
     }
     return p;
 }
 
-piece_t Board::move_piece(int r, int c, Move m) {
-    return move_piece(r, c, r + m.r, c + m.c, m.new_piece);
-}
-
-piece_t Board::move_piece(Pos p, int r, int c) {
-    return move_piece(p.r, p.c, p.r + r, p.c + c);
-}
-
-piece_t Board::move_piece(Pos p, Move m) {
-    return move_piece(p.r, p.c, p.r + m.r, p.c + m.c, m.new_piece);
-}
-
-piece_t Board::move_piece(Pos_Move pm) {
-    //std::cout << pm.to_string() << "\n";
-    piece_t piece = move_piece(pm.pos.r, pm.pos.c, pm.pos.r + pm.move.r, pm.pos.c + pm.move.c, pm.move.new_piece);
-    if (pm.next) move_piece(*(pm.next));
+piece_t Board::move_piece(Move m) {
+    std::cout << m.to_string() << "\n";
+    piece_t piece = move_piece(m.from.first, m.from.second, m.to.first, m.to.second, m.sm, m.captured, m.promotion);
     return piece;
 }
 
 
-pos_moves_t Board::get_moves(int r, int c, Special_Move sm, Pos ep) const {
-    moves2_t m_list = get_moves_lists(r, c, sm);
-    pos_moves_t moves = filter_moves_lists(r, c, m_list, sm, ep);
+moves_t Board::get_moves(int r, int c, Special_Move sm, Pos ep) const {
+    diffs2_t m_list = get_moves_lists(r, c, sm);
+    moves_t moves = filter_moves_lists(r, c, m_list, sm, ep);
     return moves;
 }
 
-pos_moves_t Board::get_moves(Pos p, Special_Move sm, Pos ep) const {
-    return get_moves(p.r, p.c, sm, ep);
+moves_t Board::get_moves(Pos p, Special_Move sm, Pos ep) const {
+    return get_moves(p.first, p.second, sm, ep);
 }
 
 
-moves2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
+diffs2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
     if (!on_board(r, c)) return {};
     return get_piece_moves(board[r][c], sm);
 }
 
 //Filter collision with other pieces and edge of board
-pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special_Move sm, Pos ep) const {
+moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Move sm, Pos ep) const {
     //std::cout << "Starting with move list: " << move::to_string(moves_list);
 
     if (!on_board(r, c)) return {};
     piece_t p1 = board[r][c];
     if (p1 == __) return {};
 
-    pos_moves_t moves;
+    moves_t moves;
     bool capture;
     bool en_passant;
-    moves_t::iterator it;
-    for (moves_t move_list : moves_list) {
+    diffs_t::iterator it;
+    for (diffs_t move_list : moves_list) {
         capture = false;                                //reset capture flag
         en_passant = false;                             //reset en passant flag
         for (it = move_list.begin(); it != move_list.end(); it++) {
-            int r_move = r + (*it).r;
-            int c_move = c + (*it).c;
+            int r_move = r + (*it).first;
+            int c_move = c + (*it).second;
             if(on_board(r_move, c_move)) {
                 piece_t p2 = board[r_move][c_move];
                 if(p2 == __) {                          //piece is empty
                     //std::cout << "Empty space\n";
-                    if (sm == CAPTURE_ONLY && on_board(ep)) {
-                        int offset = get_color(p1) ? -1 : 1;
-                        if (r_move == ep.r + offset && c_move == ep.c) {
+                    if ((sm == CAPTURE_ONLY || sm == EN_PASSANT) && on_board(ep)) {
+                        if (r_move == ep.first + (get_color(p1) ? -1 : 1) && c_move == ep.second) {
                             //std::cout << "En passant!\n";
                             it++;
                             en_passant = true;
@@ -132,7 +146,8 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
                     break;
                 } else {                                //piece is opposite color: capture (as long as not a pawn)
                     //std::cout << "Enemy piece\n";
-                    if (sm != MOVE_ONLY && sm != PAWN_STARTING) {
+                    if (sm != MOVE_ONLY && sm != PAWN_STARTING
+                     && sm != KINGSIDE && sm != QUEENSIDE) {
                         it++;
                         capture = true;
                     }
@@ -144,37 +159,38 @@ pos_moves_t Board::filter_moves_lists(int r, int c, moves2_t moves_list, Special
             }
         }
 
-        if (sm == CAPTURE_ONLY) {
+        if (sm == CAPTURE_ONLY || sm == EN_PASSANT
+         || sm == KINGSIDE || sm == QUEENSIDE) {        //For getting only the last move in a list
             if (en_passant) {
-                Pos_Move *remove_pawn = new Pos_Move(ep, Move(BOARD_SIZE, BOARD_SIZE));
-                Pos_Move *move = new Pos_Move(Pos(r, c), *(--it), remove_pawn);
-                moves.push_back(*move);
+                moves.push_back(Move ({r, c}, (*(--it) + Pos(r, c)), EN_PASSANT));
             } else if (capture) {
-                moves.push_back(Pos_Move(Pos(r, c), *(--it)));
+                moves.push_back(Move ({r, c}, *(--it) + Pos(r, c)));
+            } else if ((sm == KINGSIDE || sm == QUEENSIDE)
+                     && move_list.end() == it) {
+                moves.push_back(Move ({r, c}, *(--it) + Pos(r, c), sm));
             }
         } else {
-            moves_t::iterator valid;
-            for (valid = move_list.begin(); valid != it; valid++) {
-                moves.push_back(Pos_Move(Pos(r, c), *valid));
+            for (auto valid = move_list.begin(); valid != it; valid++) {
+                if (sm == PAWN_STARTING && *(valid) == move_list.back()) {
+                    moves.push_back(Move ({r, c}, *(valid) + Pos(r, c), PAWN_STARTING));
+                } else {
+                    moves.push_back(Move ({r, c}, *(valid) + Pos(r, c)));
+                }
             }
-            //std::transform(move_list.begin(), it, moves.end(), //Convert move to pos_move
-            //[&r, &c](Move m) -> Pos_Move {return Pos_Move(Pos(r, c), m);});
         }
-        
     }
+
     if (is_pawn_promotion(r, c, p1)) {
-        pos_moves_t promotions_moves;
-        for (Pos_Move move : moves) {
-            for (Move m : promotions[!get_color(p1)][0]) {
-                Move new_m = move.move;
-                new_m.new_piece = m.new_piece;
-                promotions_moves.push_back(Pos_Move(move.pos, new_m, move.next));
+        pieces_t promotions_moves;
+        for (Move move : moves) {
+            for (piece_t m : promotions[!get_color(p1)]) {
+                move.promotion = m;
             }
         }
-        return promotions_moves;
     }
     return moves;
 }
+
 
 Pos Board::get_king_pos(bool color) const {
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -187,9 +203,9 @@ Pos Board::get_king_pos(bool color) const {
 }
 
 //in_check helper
-bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, moves2_t moves_lists) const {
-    for (moves_t moves : moves_lists) {
-        for (Move m : moves) {
+bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists) const {
+    for (diffs_t diffs : diffs_lists) {
+        for (Pos m : diffs) {
             if (!on_board(p+m)) break;          //If off board, go to next move list
 
             piece_t piece = (*this)[p+m];
@@ -218,7 +234,7 @@ bool Board::in_check(bool color) const {
      || check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves)
      || check_for_piece(p, {pieces[3]}, knight_moves)
      || check_for_piece(p, {pieces[4]}, king_moves)
-     || check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color]))    //White is true==1 but index is [0]
+     || check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color]))    //White is true==1 but white index is [0]
         return true;
     return false;
 }
