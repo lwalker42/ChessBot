@@ -88,7 +88,7 @@ piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece
 }
 
 piece_t Board::move_piece(Move m) {
-    std::cout << m.to_string() << "\n";
+    //std::cout << m.to_string() << "\n";
     piece_t piece = move_piece(m.from.first, m.from.second, m.to.first, m.to.second, m.sm, m.captured, m.promotion);
     return piece;
 }

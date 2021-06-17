@@ -6,14 +6,14 @@
 #include "type_defs.hpp"
 
 
-const board_t init_board = {{{BR,BN,BB,__,BK,BB,BN,BR},
-                             {BP,BP,BP,__,BP,BP,BP,BP},
+const board_t init_board = {{{BR,BN,BB,BQ,BK,BB,BN,BR},
+                             {BP,BP,BP,BP,BP,BP,BP,BP},
                              {__,__,__,__,__,__,__,__},
                              {__,__,__,__,__,__,__,__},
                              {__,__,__,__,__,__,__,__},
-                             {__,__,BQ,__,__,__,__,__},
-                             {WP,WP,WP,__,WP,WP,WP,WP},
-                             {WR,__,__,__,WK,WB,WN,WR}
+                             {__,__,__,__,__,__,__,__},
+                             {WP,WP,WP,WP,WP,WP,WP,WP},
+                             {WR,WN,WB,WQ,WK,WB,WN,WR}
                             }};
 
 const diffs2_t bishop_moves = {{P(1, 1), P(2, 2), P(3, 3), P(4, 4),

@@ -114,12 +114,12 @@ bool Game::try_move_check(Move move) {
 }
 
 moves_t Game::filter_check(moves_t moves) {
-    std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "\n" << move::to_string(moves) << "\n";
     moves.erase(std::remove_if(moves.begin(), 
                                moves.end(), 
                                [this](Move m){return this->try_move_check(m);}), moves.end());
     
-    std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "\n" << move::to_string(moves) << "\n";
     return moves;
 }
 
