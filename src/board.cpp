@@ -44,6 +44,13 @@ board_t Board::get_board() const {
 
 
 piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece_t captured, piece_t promotion) {
+    Move m ({r1, c1}, {r2, c2}, sm, captured, promotion);
+    return move_piece(m);
+}
+
+piece_t Board::move_piece(const Move &m) {
+    //std::cout << m.to_string() << "\n";
+    int r1 = m.from.first, c1 = m.from.second, r2 = m.to.first, c2 = m.to.second;
     if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
     piece_t p = board[r1][c1];          //Initial pos is on board
     if (p == __) return p;              //Empty so exit
@@ -51,16 +58,14 @@ piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece
     bool col = get_color(p);
     if (!on_board(r2, c2)) return p;    //Target pos is out of bounds
 
-    switch (sm) {
+    switch (m.sm) {
         case EN_PASSANT:
             board[r2][c2] = p;
             board[r2+(col ? 1 : -1)][c2] = __;
-            captured = col ? BP : WP;
             break;
 
         case PROMOTION:
-            captured = board[r2][c2];
-            board[r2][c2] = promotion;
+            board[r2][c2] = m.promotion;
             break;
 
         case KINGSIDE:
@@ -80,17 +85,59 @@ piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece
         case PAWN_STARTING:
         case CAPTURE_ONLY:
         default:
-            captured = board[r2][c2];
             board[r2][c2] = p;
             break;
     }
     return p;
 }
 
-piece_t Board::move_piece(Move m) {
+
+//Only guranteed to work for the previous move
+piece_t Board::unmove_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece_t captured, piece_t promotion) {
+    Move m ({r1, c1}, {r2, c2}, sm, captured, promotion);
+    return move_piece(m);
+}
+
+piece_t Board::unmove_piece(const Move &m) {
     //std::cout << m.to_string() << "\n";
-    piece_t piece = move_piece(m.from.first, m.from.second, m.to.first, m.to.second, m.sm, m.captured, m.promotion);
-    return piece;
+    int r1 = m.from.first, c1 = m.from.second, r2 = m.to.first, c2 = m.to.second;
+    piece_t p = board[r2][c2];          //Initial pos is on board
+    board[r2][c2] = __;
+    bool col = get_color(p);
+
+    switch (m.sm) {
+        case EN_PASSANT:
+            board[r1][c1] = p;
+            board[r2+(col ? 1 : -1)][c2] = m.captured;
+            break;
+
+        case PROMOTION:
+            board[r1][c1] = col ? WP : BP;
+            board[r2][c2] = m.captured;
+            break;
+
+        case KINGSIDE:
+            board[r1][c1] = p;
+            board[r1][c1+3] = board[r1][c1+1];
+            board[r1][c1+1] = __;
+            break;
+
+        case QUEENSIDE:
+            board[r1][c1] = p;
+            board[r1][c1-4] = board[r1][c1-1];
+            board[r1][c1-1] = __;
+            break;
+
+        case NONE:
+        case MOVE_ONLY:
+        case PAWN_STARTING:
+        case CAPTURE_ONLY:
+        default:
+            board[r2][c2] = m.captured;
+            board[r1][c1] = p;
+            break;
+    }
+    return p;
 }
 
 
@@ -161,20 +208,22 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
 
         if (sm == CAPTURE_ONLY || sm == EN_PASSANT
          || sm == KINGSIDE || sm == QUEENSIDE) {        //For getting only the last move in a list
+            Pos to = (*(--it) + Pos(r, c));
             if (en_passant) {
-                moves.push_back(Move ({r, c}, (*(--it) + Pos(r, c)), EN_PASSANT));
+                moves.push_back(Move ({r, c}, to, EN_PASSANT, (*this)[ep]));
             } else if (capture) {
-                moves.push_back(Move ({r, c}, *(--it) + Pos(r, c)));
+                moves.push_back(Move ({r, c}, to, sm, (*this)[to]));
             } else if ((sm == KINGSIDE || sm == QUEENSIDE)
                      && move_list.end() == it) {
-                moves.push_back(Move ({r, c}, *(--it) + Pos(r, c), sm));
+                moves.push_back(Move ({r, c}, to, sm));
             }
         } else {
             for (auto valid = move_list.begin(); valid != it; valid++) {
+                Pos to = *(valid) + Pos(r, c);
                 if (sm == PAWN_STARTING && *(valid) == move_list.back()) {
-                    moves.push_back(Move ({r, c}, *(valid) + Pos(r, c), PAWN_STARTING));
+                    moves.push_back(Move ({r, c}, to, PAWN_STARTING));
                 } else {
-                    moves.push_back(Move ({r, c}, *(valid) + Pos(r, c)));
+                    moves.push_back(Move ({r, c}, to, NONE, (*this)[to]));
                 }
             }
         }

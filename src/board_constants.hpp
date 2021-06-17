@@ -1,6 +1,8 @@
 #ifndef BOARD_CONSTANTS_HPP
 #define BOARD_CONSTANTS_HPP
 
+#include <functional>
+
 #include "piece.hpp"
 #include "move.hpp"
 #include "type_defs.hpp"

@@ -19,8 +19,10 @@ class Board {
         piece_t operator[](Pos) const;
         std::string to_string() const;
         board_t get_board() const;
-        piece_t move_piece(int, int, int = -1, int = -1, Special_Move = NONE, piece_t = __, piece_t = __);
-        piece_t move_piece(Move);
+        piece_t move_piece(int, int, int = -1, int = -1, Special_Move = NONE, piece_t = __, piece_t = __);  //deprecated
+        piece_t move_piece(const Move&);
+        piece_t unmove_piece(int, int, int = -1, int = -1, Special_Move = NONE, piece_t = __, piece_t = __);//deprecated
+        piece_t unmove_piece(const Move&);
 
         moves_t get_moves(int, int, Special_Move = NONE, Pos = {-1, -1}) const;
         moves_t get_moves(Pos, Special_Move = NONE, Pos = {-1, -1}) const;

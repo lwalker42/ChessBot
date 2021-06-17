@@ -32,23 +32,57 @@ void Game::play_game() {
     while(!finished) {
         if(display) print_game();
         Move m = turn ? get_input(CIN_INPUT) : get_input(CIN_INPUT);
+        if (m.from.first == 'U' && game_moves.size() > 0) {
+            unmake_move();
+            continue;
+        }
         if (!valid_move(m)) {
             std::cout << "\n\nInvalid move\n";
             continue;
         }
-        handle_castle(m);
-        handle_en_passant(m);
-        board.move_piece(m);
-        turn = !turn;
-        check = board.in_check(turn);
-        if (check) in_checkmate();
+        make_move(m);
     }
     std::cout << "\n" << board.to_string();
     std::cout << "Game over.  " << (turn ? "Black" : "White") << " wins!\n";
 }
 
-void Game::make_move(Move m) {
+void Game::make_move(Move &m) {
+    handle_special(m);
+    board.move_piece(m);
+    game_moves.push_back(m);
+    turn = !turn;
+    check = board.in_check(turn);
+    if (check) in_checkmate();
+}
 
+Move Game::unmake_move() {
+    Move m = game_moves.back();
+    game_moves.pop_back();
+
+    unhandle_special(m);
+    board.unmove_piece(m);
+    turn = !turn;
+    finished = false;
+    check = board.in_check(turn);
+
+    return m;
+}
+
+
+moves_t Game::get_all_moves() {
+    moves_t moves;
+    board_t b = board.get_board();
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j <BOARD_SIZE; j++) {
+            piece_t p = b[i][j];
+            if (is_empty(p)) continue;
+            if (get_color(p) == turn) {
+                moves_t p_moves = get_moves(i, j, p);
+                moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+            }
+        }
+    }
+    return moves;
 }
 
 
@@ -107,10 +141,11 @@ moves_t Game::get_moves(Pos p, piece_t piece) {
 
 
 //filter_check helper: remove if move puts current player in check
-bool Game::try_move_check(Move move) {
-    Board b(board);
-    b.move_piece(move);
-    return b.in_check(turn);
+bool Game::try_move_check(const Move &move) {
+    board.move_piece(move);
+    bool in_check = board.in_check(!turn);
+    board.unmove_piece(move);
+    return in_check;
 }
 
 moves_t Game::filter_check(moves_t moves) {
@@ -141,6 +176,7 @@ bool Game::try_castle(bool color, Special_Move side) {
 }
 
 bool Game::in_checkmate() {
+    if (finished) return true;
     board_t b = board.get_board();
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j <BOARD_SIZE; j++) {
@@ -156,32 +192,52 @@ bool Game::in_checkmate() {
 }
 
 
-void Game::handle_castle(Move move) {
+void Game::handle_special(Move &move) {
     piece_t p = board[move.from];
     bool c = get_color(p);
-    if (c ? !white_kingside && !white_queenside
-          : !black_kingside && !black_queenside) return;    //If castling ins't possible, skip
-          
-    if (is_king(p)) {
-        if (c) {
-            white_kingside = false;
-            white_queenside = false;
-        } else {
-            black_kingside = false;
-            black_queenside = false;
-        }
-    } else if (is_kingside(move.from, p)) {
-        (c ? white_kingside : black_kingside) = false;
-    } else if (is_queenside(move.from, p)) {
-        (c ? white_queenside : black_queenside) = false;
-    }
-}
-
-void Game::handle_en_passant(Move move) {
+    move.game_flags = check 
+                    | (white_kingside << 1)
+                    | (white_queenside << 2)
+                    | (black_kingside << 3)
+                    | (black_queenside << 4)
+                    | (en_passant << 5);
+    std::cout << "game_flags init: " << move.game_flags << "\n";
     if (move.sm == PAWN_STARTING) {
         en_passant = true;
         en_passant_pos = move.to;
-    } else {
-        en_passant = false;
+        return;
+    } else if (c ? (white_kingside || white_queenside)
+                 : (black_kingside || black_queenside)) {
+        if (is_king(p)) {                                       //Check if king moves
+            (c ? white_kingside : black_kingside) = false;
+            (c ? white_queenside : black_queenside) = false;
+        } else if ((c ? white_kingside : black_kingside)        //Check is kingside rook moves
+                 && is_kingside(move.from, p)) {
+            (c ? white_kingside : black_kingside) = false;
+        } else if ((c ? white_queenside : black_queenside)      //Check is queenside rook moves
+                 && is_queenside(move.from, p)) {
+            (c ? white_queenside : black_queenside) = false;
+        } else if ((c ? black_kingside : white_kingside)        //Check is kingside rook is captured
+                 && is_kingside(move.to, board[move.to])) {
+            (c ? black_kingside : white_kingside) = false;
+        } else if ((c ? black_queenside : white_queenside)      //Check is queenside rook is captured
+                 && is_queenside(move.to, board[move.to])) {
+            (c ? black_queenside : white_queenside) = false;
+        }
+    }
+    en_passant = false;
+}
+
+void Game::unhandle_special(Move &move) {
+    int f = move.game_flags;
+    std::cout << "New game_flags: " << f << "\n";
+    check = f & 1;
+    white_kingside = f & (1 << 1);
+    white_queenside = f & (1 << 2);
+    black_kingside = f & (1 << 3);
+    black_queenside = f & (1 << 4);
+    en_passant = f & (1 << 5);
+    if (move.sm == EN_PASSANT) {
+        en_passant_pos = game_moves.back().to;
     }
 }

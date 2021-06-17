@@ -24,6 +24,7 @@ Move get_cin_input() {
     std::string str;
     std::cout << "Input your move: Inital_Row Initial_Col New_Row New_Col (no spaces)\n"; 
     std::cin >> str;
+    if(str.length() > 0 && str[0] == 'U') return Move ({'U', -1}, {-1, -1});
     if (str.length() > 2) {
         Move m ({str[0] - 48, str[1] - 48}, {str[2]-48, str[3]-48});
         if (str.length() > 4) {
