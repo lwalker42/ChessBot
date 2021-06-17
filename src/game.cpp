@@ -201,7 +201,6 @@ void Game::handle_special(Move &move) {
                     | (black_kingside << 3)
                     | (black_queenside << 4)
                     | (en_passant << 5);
-    std::cout << "game_flags init: " << move.game_flags << "\n";
     if (move.sm == PAWN_STARTING) {
         en_passant = true;
         en_passant_pos = move.to;
@@ -230,7 +229,6 @@ void Game::handle_special(Move &move) {
 
 void Game::unhandle_special(Move &move) {
     int f = move.game_flags;
-    std::cout << "New game_flags: " << f << "\n";
     check = f & 1;
     white_kingside = f & (1 << 1);
     white_queenside = f & (1 << 2);
