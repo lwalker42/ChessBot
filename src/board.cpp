@@ -161,6 +161,8 @@ diffs2_t Board::get_moves_lists(int r, int c, Special_Move sm) const {
 moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Move sm, Pos ep) const {
     //std::cout << "Starting with move list: " << move::to_string(moves_list);
 
+    //std::cout << "piece " << (char)board[r][c] << " at (" << r << ", " << c <<")\n";
+
     if (!on_board(r, c)) return {};
     piece_t p1 = board[r][c];
     if (p1 == __) return {};
@@ -208,7 +210,7 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
 
         if (sm == CAPTURE_ONLY || sm == EN_PASSANT
          || sm == KINGSIDE || sm == QUEENSIDE) {        //For getting only the last move in a list
-            Pos to = (*(--it) + Pos(r, c));
+            Pos to = (*(std::prev(it)) + Pos(r, c));
             if (en_passant) {
                 moves.push_back(Move ({r, c}, to, EN_PASSANT, (*this)[ep]));
             } else if (capture) {
@@ -237,6 +239,7 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
             }
         }
     }
+    //std::cout << "Ending with move list: " << move::to_string(moves) << "\n";
     return moves;
 }
 
@@ -275,6 +278,7 @@ bool Board::in_check(bool color) const {
     Pos p = get_king_pos(color);
     if (!on_board(p)) return false;
 
+    std::cout << "Using piece: " << ((*this)[p]) << "\n";
     std::vector<piece_t> pieces;
     if (color) pieces = {BQ, BR, BB, BN, BK, BP};
     else pieces = {WQ, WR, WB, WN, WK, WP};

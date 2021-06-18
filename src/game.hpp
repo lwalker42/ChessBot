@@ -20,6 +20,7 @@ class Game {
     public:
         Game();
         Game(board_t);
+        Game(bool);
         void print_game();
         void play_game();
         void make_move(Move&);

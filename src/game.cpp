@@ -10,7 +10,6 @@
 #include "board_constants.hpp"
 
 Game::Game() {
-    Board board;
     turn = WHITE;
     check = false;
     finished = false;
@@ -22,9 +21,12 @@ Game::Game() {
     display = true;
 }
 
-Game::Game(board_t b) {
-    Game();
-    Board board (b);
+Game::Game(board_t b) : Game() {
+    board = Board (b);
+}
+
+Game::Game(bool t) : Game() {
+    turn = t;
 }
 
 void Game::print_game() {
@@ -148,7 +150,7 @@ moves_t Game::get_moves(Pos p, piece_t piece) {
 //filter_check helper: remove if move puts current player in check
 bool Game::try_move_check(const Move &move) {
     board.move_piece(move);
-    bool in_check = board.in_check(!turn);
+    bool in_check = board.in_check(turn);
     board.unmove_piece(move);
     return in_check;
 }
