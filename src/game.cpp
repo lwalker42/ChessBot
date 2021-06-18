@@ -22,6 +22,11 @@ Game::Game() {
     display = true;
 }
 
+Game::Game(board_t b) {
+    Game();
+    Board board (b);
+}
+
 void Game::print_game() {
     std::cout << std::endl << board.to_string();
     std::cout << (turn ? "White's turn\n" : "Black's turn\n");

@@ -19,6 +19,7 @@ class Game {
 
     public:
         Game();
+        Game(board_t);
         void print_game();
         void play_game();
         void make_move(Move&);
