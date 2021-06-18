@@ -223,7 +223,7 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
             for (auto valid = move_list.begin(); valid != it; valid++) {
                 Pos to = *(valid) + Pos(r, c);
                 if (sm == PAWN_STARTING && *(valid) == move_list.back()) {
-                    moves.push_back(Move ({r, c}, to, PAWN_STARTING));
+                    moves.push_back(Move ({r, c}, to, PAWN_STARTING));      //For en passant handling
                 } else {
                     moves.push_back(Move ({r, c}, to, NONE, (*this)[to]));
                 }
@@ -232,10 +232,14 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
     }
 
     if (is_pawn_promotion(r, c, p1)) {
-        pieces_t promotions_moves;
-        for (Move move : moves) {
-            for (piece_t m : promotions[!get_color(p1)]) {
-                move.promotion = m;
+        moves_t old_moves = moves;
+        moves.clear();
+        for (Move move : old_moves) {
+            for (piece_t p : promotions[!get_color(p1)]) {
+                Move m (move);
+                m.sm = PROMOTION;
+                m.promotion = p;
+                moves.push_back(m);
             }
         }
     }
@@ -278,7 +282,6 @@ bool Board::in_check(bool color) const {
     Pos p = get_king_pos(color);
     if (!on_board(p)) return false;
 
-    std::cout << "Using piece: " << ((*this)[p]) << "\n";
     std::vector<piece_t> pieces;
     if (color) pieces = {BQ, BR, BB, BN, BK, BP};
     else pieces = {WQ, WR, WB, WN, WK, WP};

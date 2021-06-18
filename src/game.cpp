@@ -21,13 +21,15 @@ Game::Game() {
     display = true;
 }
 
-Game::Game(board_t b) : Game() {
+Game::Game(board_t b, bool t, bool wk, bool wq, bool bq, bool bk) : Game() {
     board = Board (b);
+    turn = t;
+    white_kingside = wk;
+    white_queenside = wq;
+    black_kingside = bk;
+    black_queenside = bq;
 }
 
-Game::Game(bool t) : Game() {
-    turn = t;
-}
 
 void Game::print_game() {
     std::cout << std::endl << board.to_string();
@@ -258,7 +260,7 @@ int Game::perft(int depth) {
         num_moves += perft(depth-1);
         unmake_move();
     }
-    if (true || depth == 2) {
+    if (true || depth == 4) {
         std::cout << num_moves << " moves at depth " << depth << "\n";
         std::cout << board.to_string(); 
         std::cout << "\n\n";

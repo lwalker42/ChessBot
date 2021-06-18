@@ -11,7 +11,7 @@ class Game {
     private:
         Board board;
         Pos en_passant_pos = {-1, -1};
-        bool turn, check, white_queenside, white_kingside, black_queenside, black_kingside, finished, display, en_passant;
+        bool turn, check, white_kingside, white_queenside, black_kingside, black_queenside, finished, display, en_passant;
         std::vector<Move> game_moves;
         bool try_move_check(const Move&);
         void handle_special(Move&);
@@ -19,8 +19,7 @@ class Game {
 
     public:
         Game();
-        Game(board_t);
-        Game(bool);
+        Game(board_t, bool t = true, bool wk = true, bool wq = true, bool bk = true, bool bq = true);
         void print_game();
         void play_game();
         void make_move(Move&);
