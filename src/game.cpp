@@ -78,7 +78,7 @@ moves_t Game::get_all_moves() {
     moves_t moves;
     board_t b = board.get_board();
     for (int i = 0; i < BOARD_SIZE; i++) {
-        for (int j = 0; j <BOARD_SIZE; j++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
             piece_t p = b[i][j];
             if (is_empty(p)) continue;
             if (get_color(p) == turn) {
@@ -132,8 +132,8 @@ moves_t Game::get_moves(int r, int c, piece_t piece) {
         bool col = get_color(piece);
         moves_t kings = board.get_moves(r, c, KINGSIDE);
         moves_t queens = board.get_moves(r, c, QUEENSIDE);
-        if (try_castle(col, KINGSIDE) && kings.size() > 0) moves.push_back(kings[0]);
-        if (try_castle(col, QUEENSIDE) && queens.size() > 0) moves.push_back(queens[0]);
+        if (kings.size() > 0 && try_castle(col, KINGSIDE)) moves.push_back(kings[0]);
+        if (queens.size() > 0 && try_castle(col, QUEENSIDE)) moves.push_back(queens[0]);
     } else {
         moves = board.get_moves(r, c);
     }
@@ -154,12 +154,12 @@ bool Game::try_move_check(const Move &move) {
 }
 
 moves_t Game::filter_check(moves_t moves) {
-    //std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "Before filter: " << move::to_string(moves) << "\n";
     moves.erase(std::remove_if(moves.begin(), 
                                moves.end(), 
                                [this](Move m){return this->try_move_check(m);}), moves.end());
     
-    //std::cout << "\n" << move::to_string(moves) << "\n";
+    //std::cout << "After filter: " << move::to_string(moves) << "\n";
     return moves;
 }
 
@@ -243,4 +243,23 @@ void Game::unhandle_special(Move &move) {
     if (move.sm == EN_PASSANT) {
         en_passant_pos = game_moves.back().to;
     }
+}
+
+
+int Game::perft(int depth) {
+    if (depth <= 0) return 1;
+    //std::cout << board.to_string();
+
+    int num_moves = 0;
+    for (Move move : get_all_moves()) {
+        make_move(move);
+        num_moves += perft(depth-1);
+        unmake_move();
+    }
+    if (true || depth == 2) {
+        std::cout << num_moves << " moves at depth " << depth << "\n";
+        std::cout << board.to_string(); 
+        std::cout << "\n\n";
+    }
+    return num_moves;
 }

@@ -32,6 +32,8 @@ class Game {
         moves_t filter_check(moves_t);
         bool try_castle(bool, Special_Move);
         bool in_checkmate();
+
+        int perft(int);
 };
 
 #endif
