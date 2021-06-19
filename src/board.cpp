@@ -260,7 +260,7 @@ Pos Board::get_king_pos(bool color) const {
 }
 
 //in_check helper
-bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists) const {
+bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists, Pos &check_pos) const {
     for (diffs_t diffs : diffs_lists) {
         for (Pos m : diffs) {
             if (!on_board(p+m)) break;          //If off board, go to next move list
@@ -270,6 +270,7 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_l
 
             for (piece_t check_piece : pieces) {//There's a piece there; see if it's one we're looking for
                 if (piece == check_piece) {
+                    check_pos = (p+m);
                     return true;
                 }
             }
@@ -279,19 +280,40 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_l
     return false;
 }
 
-bool Board::in_check(bool color) const {
+
+bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists) const {
+    Pos check_pos(-1, -1);
+    return check_for_piece(p, pieces, diffs_lists, check_pos);
+}
+
+
+bool Board::in_check(bool color, Pos &check_1, Pos &check_2) const {
     Pos p = get_king_pos(color);
     if (!on_board(p)) return false;
 
     std::vector<piece_t> pieces;
     if (color) pieces = {BQ, BR, BB, BN, BK, BP};
     else pieces = {WQ, WR, WB, WN, WK, WP};
+    int check = 0;
 
-    if (check_for_piece(p, {pieces[0], pieces[1]}, rook_moves)
-     || check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves)
-     || check_for_piece(p, {pieces[3]}, knight_moves)
-     || check_for_piece(p, {pieces[4]}, king_moves)
-     || check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color]))    //White is true==1 but white index is [0]
-        return true;
-    return false;
+    check += check_for_piece(p, {pieces[0], pieces[1]}, rook_moves, check_1);
+
+    check += check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves, check ? check_2 : check_1);
+    if(check >= 2) return check;
+
+    check += check_for_piece(p, {pieces[3]}, knight_moves, check ? check_2 : check_1);
+    if(check >= 2) return check;
+
+    check += check_for_piece(p, {pieces[4]}, king_moves, check ? check_2 : check_1);
+    if(check >= 2) return check;
+
+    check += check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color], check ? check_2 : check_1);    //White is true==1 but white index is [0]
+
+    return check;
+}
+
+bool Board::in_check(bool color) const {
+    Pos check1(-1, -1);
+    Pos check2(-1, -1);
+    return in_check(color, check1, check2);
 }

@@ -10,6 +10,7 @@
 class Board {
     board_t board;
 
+    bool check_for_piece(Pos, std::vector<piece_t>, diffs2_t, Pos&) const;
     bool check_for_piece(Pos, std::vector<piece_t>, diffs2_t) const;
     
     public:
@@ -30,6 +31,7 @@ class Board {
         moves_t filter_moves_lists(int, int, diffs2_t, Special_Move = NONE, Pos = {-1, -1}) const;
 
         Pos get_king_pos(bool) const;
+        bool in_check(bool, Pos&, Pos&) const;
         bool in_check(bool) const;
 };
 
