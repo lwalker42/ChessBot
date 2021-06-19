@@ -8,6 +8,7 @@
 #include "user_input.hpp"
 #include "move.hpp"
 #include "board_constants.hpp"
+#include "timer.hpp"
 
 Game::Game() {
     turn = WHITE;
@@ -72,7 +73,6 @@ Move Game::unmake_move() {
     board.unmove_piece(m);
     turn = !turn;
     finished = false;
-    check = board.in_check(turn);
 
     return m;
 }

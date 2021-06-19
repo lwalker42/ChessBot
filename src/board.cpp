@@ -8,6 +8,7 @@
 #include "board_constants.hpp"
 #include "board.hpp"
 #include "util.hpp"
+#include "timer.hpp"
 
 
 Board::Board() {

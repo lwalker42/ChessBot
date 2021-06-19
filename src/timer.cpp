@@ -1,16 +1,24 @@
 #include <chrono>
+#include <iostream>
 #include "timer.hpp"
 
 
 using namespace std::chrono;
 
-int elapsed = 0;
+double elapsed = 0;
+bool running = false;
 time_point<high_resolution_clock> start;
 
 void start_time() {
+    if (running) {
+        std::cout << "TRIED TO START TIMER WHILE IT WAS RUNNING\n";
+        return;
+    }
+    running = true;
     start = high_resolution_clock::now();
 }
 
 void end_time() {
-    elapsed += duration_cast<milliseconds>(high_resolution_clock::now() - start).count();
+    elapsed += duration_cast<microseconds>(high_resolution_clock::now() - start).count() / 1000.;
+    running = false;
 }
