@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "game.hpp"
+#include "timer.hpp"
 
 const board_t board2= {{{BR,__,__,__,BK,__,__,BR},
                         {BP,__,BP,BP,BQ,BP,BB,__},
@@ -42,7 +43,10 @@ int main () {
     std::cout << "Depth to search to: ";
     int depth;
     std::cin >> depth;
+    start_time();
     int num_moves = game.perft(depth);
+    end_time();
+    std::cout << "Time elapsed: " << elapsed << "\n";
     std::cout << "At a depth of " << depth << ", " << num_moves << " different leaf nodes were counted\n";//*/
     return 0;
 }
