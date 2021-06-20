@@ -19,6 +19,6 @@ void start_time() {
 }
 
 void end_time() {
-    elapsed += duration_cast<microseconds>(high_resolution_clock::now() - start).count() / 1000.;
+    elapsed += duration_cast<nanoseconds>(high_resolution_clock::now() - start).count() / 1000000.;
     running = false;
 }

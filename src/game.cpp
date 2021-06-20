@@ -29,6 +29,7 @@ Game::Game(board_t b, bool t, bool wk, bool wq, bool bq, bool bk) : Game() {
     white_queenside = wq;
     black_kingside = bk;
     black_queenside = bq;
+    check = board.in_check(turn, check_1, check_2);
 }
 
 
@@ -61,8 +62,11 @@ void Game::make_move(Move &m) {
     board.move_piece(m);
     game_moves.push_back(m);
     turn = !turn;
-    check = board.in_check(turn);
-    if (check) in_checkmate();
+    check = board.in_check(turn, check_1, check_2);
+    if (check) {
+    //std::cout << "(" << check_1.first << ", " << check_1.second <<  ") / (" << check_2.first << ", " << check_2.second << ")\n";
+        in_checkmate();
+    }
 }
 
 Move Game::unmake_move() {
@@ -81,13 +85,34 @@ Move Game::unmake_move() {
 moves_t Game::get_all_moves() {
     moves_t moves;
     board_t b = board.get_board();
+    Pos king_pos = board.get_king_pos(turn);
+    pos_t blocking = get_blocking(king_pos);
+    blocking.push_back(king_pos);
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
             piece_t p = b[i][j];
             if (is_empty(p)) continue;
             if (get_color(p) == turn) {
-                moves_t p_moves = get_moves(i, j, p);
-                moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+                if (check) {
+                    //TODO Check cases
+                    /*if (!on_board(check_2)) {   //Only one piece is delivering check
+                        moves_t captures = get_moves(i, j, p, true, true);
+                        moves.insert(moves.end(), captures.begin(), captures.end());
+                        if (b[check_1])
+                    }*/
+                    moves_t p_moves = get_moves(i, j, p);
+                    moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+                    
+                } else {                        //Not in check
+                    Pos pos = {i, j};
+                    if (std::find(blocking.begin(), blocking.end(), pos) != blocking.end()) {
+                        moves_t p_moves = get_moves(i, j, p);
+                        moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+                    } else {
+                        moves_t p_moves = get_moves(i, j, p, false, false);
+                        moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+                    }
+                }
             }
         }
     }
@@ -103,7 +128,7 @@ bool Game::valid_move(Move &m) {
     if (is_empty(piece)) return NULL;           //Check that piece is non-empty
     if (get_color(piece) != turn) return NULL;  //Check that piece is the current player's piece
 
-    moves_t moves = get_moves(m.from, piece);
+    moves_t moves = get_all_moves();
     //for (auto move : moves) std::cout << move.to_string() << "\n";
     auto it = std::find_if(moves.begin(), moves.end(), 
                            [&m](Move move) -> bool {return m.to == move.to
@@ -117,14 +142,16 @@ bool Game::valid_move(Move &m) {
 }
 
 
-moves_t Game::get_moves(int r, int c, piece_t piece) {
+moves_t Game::get_moves(int r, int c, piece_t piece, bool capture_only, bool filter) {
     moves_t moves;
 
     if (is_pawn(piece)) {                                           //If pawn
-        if (is_pawn_first(r, c, piece)) {                           //First get non-capturing moves
-            moves = board.get_moves(r, c, PAWN_STARTING);           //Move 1 or 2
-        } else {
-            moves = board.get_moves(r, c, MOVE_ONLY);               //Move 1
+        if (!capture_only) {
+            if (is_pawn_first(r, c, piece)) {                           //First get non-capturing moves
+                moves = board.get_moves(r, c, PAWN_STARTING);           //Move 1 or 2
+            } else {
+                moves = board.get_moves(r, c, MOVE_ONLY);               //Move 1
+            }
         }
         moves_t moves2 ( en_passant 
                            ? board.get_moves(r, c, CAPTURE_ONLY, en_passant_pos)  
@@ -132,20 +159,50 @@ moves_t Game::get_moves(int r, int c, piece_t piece) {
         moves.insert(moves.end(), moves2.begin(), moves2.end());
                                                                     //TODO Then handle promotion
     } else if(is_king(piece)) {
-        moves = board.get_moves(r, c);
+        moves = board.get_moves(r, c, capture_only ? CAPTURE_ONLY : NONE);
         bool col = get_color(piece);
-        moves_t kings = board.get_moves(r, c, KINGSIDE);
-        moves_t queens = board.get_moves(r, c, QUEENSIDE);
-        if (kings.size() > 0 && try_castle(col, KINGSIDE)) moves.push_back(kings[0]);
-        if (queens.size() > 0 && try_castle(col, QUEENSIDE)) moves.push_back(queens[0]);
+        if(!capture_only) {
+            moves_t kings = board.get_moves(r, c, KINGSIDE);
+            moves_t queens = board.get_moves(r, c, QUEENSIDE);
+            if (kings.size() > 0 && try_castle(col, KINGSIDE)) moves.push_back(kings[0]);
+            if (queens.size() > 0 && try_castle(col, QUEENSIDE)) moves.push_back(queens[0]);
+        }
     } else {
-        moves = board.get_moves(r, c);
+        moves = board.get_moves(r, c, capture_only ? CAPTURE_ONLY : NONE);
     }
-    return filter_check(moves);
+    return (filter ? filter_check(moves) : moves);
 }
 
-moves_t Game::get_moves(Pos p, piece_t piece) {
-    return get_moves(p.first, p.second, piece);
+moves_t Game::get_moves(Pos p, piece_t piece, bool capture_only, bool filter) {
+    return get_moves(p.first, p.second, piece, capture_only, filter);
+}
+
+pos_t Game::get_blocking(Pos king) {
+    pos_t blocking;
+    for (diffs_t m_list : king_moves) {
+        Pos m = m_list.front();
+        Pos pos = king;
+        Pos block = {-1 , -1};
+        int br = -1, bc = -1;
+        while (true) {
+            pos.first += m.first;
+            pos.second += m.second;
+            if (!on_board(pos)) break;
+            piece_t p = board[pos];
+            if (is_empty(p))  continue;
+
+            if (get_color(p) == turn && !on_board(block)) {
+                block = pos;
+                continue;
+            } else if (get_color(p) != turn && on_board(block)) {
+                blocking.push_back(block);
+            }
+            block = {-1, -1};
+            break;
+
+        }
+    }
+    return blocking;
 }
 
 
@@ -260,7 +317,7 @@ int Game::perft(int depth) {
         num_moves += perft(depth-1);
         unmake_move();
     }
-    if (depth == 4) {
+    if (depth >= 3) {
         std::cout << num_moves << " moves at depth " << depth << "\n";
         std::cout << board.to_string(); 
         std::cout << "\n\n";

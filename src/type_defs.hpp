@@ -26,6 +26,7 @@ typedef std::vector<piece_t> pieces_t;
 typedef std::pair<int, int> Pos;
 typedef Pos P;
 typedef std::vector<Pos> diffs_t;
+typedef diffs_t pos_t;
 typedef std::vector<diffs_t> diffs2_t;
 
 #endif

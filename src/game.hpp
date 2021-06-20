@@ -10,7 +10,7 @@
 class Game {
     private:
         Board board;
-        Pos en_passant_pos = {-1, -1};
+        Pos en_passant_pos = {-1, -1}, check_1 = {-1, -1}, check_2 = {-1, -1};
         bool turn, check, white_kingside, white_queenside, black_kingside, black_queenside, finished, display, en_passant;
         std::vector<Move> game_moves;
         bool try_move_check(const Move&);
@@ -27,8 +27,9 @@ class Game {
 
         bool valid_move(Move&);
         moves_t get_all_moves();
-        moves_t get_moves(int, int, piece_t);
-        moves_t get_moves(Pos, piece_t);
+        moves_t get_moves(int, int, piece_t, bool = false, bool = true);
+        moves_t get_moves(Pos, piece_t, bool = false, bool = true);
+        pos_t get_blocking(Pos p);
         moves_t filter_check(moves_t);
         bool try_castle(bool, Special_Move);
         bool in_checkmate();

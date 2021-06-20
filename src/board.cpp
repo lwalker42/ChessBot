@@ -182,7 +182,7 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
                 piece_t p2 = board[r_move][c_move];
                 if(p2 == __) {                          //piece is empty
                     //std::cout << "Empty space\n";
-                    if ((sm == CAPTURE_ONLY || sm == EN_PASSANT) && on_board(ep)) {
+                    if (is_pawn(p1) && (sm == CAPTURE_ONLY || sm == EN_PASSANT) && on_board(ep)) {
                         if (r_move == ep.first + (get_color(p1) ? -1 : 1) && c_move == ep.second) {
                             //std::cout << "En passant!\n";
                             it++;
@@ -263,14 +263,15 @@ Pos Board::get_king_pos(bool color) const {
 bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists, Pos &check_pos) const {
     for (diffs_t diffs : diffs_lists) {
         for (Pos m : diffs) {
-            if (!on_board(p+m)) break;          //If off board, go to next move list
+            Pos new_pos(p+m);
+            if (!on_board(new_pos)) break;          //If off board, go to next move list
 
-            piece_t piece = (*this)[p+m];
+            piece_t piece = (*this)[new_pos];
             if (piece == __) continue;          //Space is empty so keep searching
 
             for (piece_t check_piece : pieces) {//There's a piece there; see if it's one we're looking for
                 if (piece == check_piece) {
-                    check_pos = (p+m);
+                    check_pos = (new_pos);
                     return true;
                 }
             }
@@ -288,6 +289,7 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_l
 
 
 bool Board::in_check(bool color, Pos &check_1, Pos &check_2) const {
+    check_2 = {-1, -1};
     Pos p = get_king_pos(color);
     if (!on_board(p)) return false;
 
