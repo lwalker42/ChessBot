@@ -23,6 +23,16 @@ const board_t board3= {{{__,__,__,__,__,__,__,__},
                         {__,__,__,__,__,__,__,__},
                         }};
 
+const board_t board4= {{{BR,__,__,__,BK,__,__,BR},
+                        {WP,BP,BP,BP,__,BP,BP,BP},
+                        {__,BB,__,__,__,BN,BB,WN},
+                        {BN,WP,__,__,__,__,__,__},
+                        {WB,WB,WP,__,WP,__,__,__},
+                        {BQ,__,__,__,__,WN,__,__},
+                        {WP,BP,__,WP,__,__,WP,WP},
+                        {WR,__,__,WQ,__,WR,WK,__},
+                        }};
+
 const board_t board5= {{{BR,BN,BB,BQ,__,BK,__,BR},
                         {BP,BP,__,WP,BB,BP,BP,BP},
                         {__,__,BP,__,__,__,__,__},
@@ -34,18 +44,19 @@ const board_t board5= {{{BR,BN,BB,BQ,__,BK,__,BR},
                         }};
 
 int main () {
-    //Game game;
-    Game game(board2);
-    //Game game(board3);
-    //Game game(board5, WHITE, true, true, false, false);
+    //Game game(init_board);
+    //Game game(board2);
+    //Game game(board3, WHITE, false, false, false, false);
+    //Game game(board4, WHITE, false, false, true, true);
+    Game game(board5, WHITE, true, true, false, false);
     //game.play_game();
     ///*
     std::cout << "Depth to search to: ";
     int depth;
     std::cin >> depth;
-    //start_time();
+    start_time();
     int num_moves = game.perft(depth);
-    //end_time();
+    end_time();
     std::cout << "Time elapsed: " << elapsed << "\n";
     std::cout << "At a depth of " << depth << ", " << num_moves << " different leaf nodes were counted\n";//*/
     return 0;

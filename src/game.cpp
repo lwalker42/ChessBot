@@ -81,7 +81,6 @@ Move Game::unmake_move() {
     return m;
 }
 
-
 moves_t Game::get_all_moves() {
     moves_t moves;
     board_t b = board.get_board();
@@ -116,6 +115,11 @@ moves_t Game::get_all_moves() {
             }
         }
     }
+    /*auto it = std::find_if(moves.begin(), moves.end(), [this](Move m){return m.sm == KINGSIDE || m.sm == QUEENSIDE;});
+    if (it != moves.end()) {
+        std::cout << board.to_string();
+        std::cout << "Failed with move: " << (*it).to_string() << "\n";
+    }*/
     return moves;
 }
 
@@ -170,7 +174,7 @@ moves_t Game::get_moves(int r, int c, piece_t piece, bool capture_only, bool fil
     } else {
         moves = board.get_moves(r, c, capture_only ? CAPTURE_ONLY : NONE);
     }
-    return (filter ? filter_check(moves) : moves);
+    return (filter || en_passant ? filter_check(moves) : moves);
 }
 
 moves_t Game::get_moves(Pos p, piece_t piece, bool capture_only, bool filter) {
@@ -282,7 +286,10 @@ void Game::handle_special(Move &move) {
         } else if ((c ? white_queenside : black_queenside)      //Check is queenside rook moves
                  && is_queenside(move.from, p)) {
             (c ? white_queenside : black_queenside) = false;
-        } else if ((c ? black_kingside : white_kingside)        //Check is kingside rook is captured
+        }
+    } else if (c ? (black_kingside || black_kingside)
+                 : (white_queenside || white_kingside)) {
+        if ((c ? black_kingside : white_kingside)               //Check is kingside rook is captured
                  && is_kingside(move.to, board[move.to])) {
             (c ? black_kingside : white_kingside) = false;
         } else if ((c ? black_queenside : white_queenside)      //Check is queenside rook is captured
