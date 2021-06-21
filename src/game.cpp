@@ -282,8 +282,9 @@ void Game::handle_special(Move &move) {
                  && is_queenside(move.from, p)) {
             (c ? white_queenside : black_queenside) = false;
         }
-    } else if (c ? (black_kingside || black_kingside)
-                 : (white_queenside || white_kingside)) {
+    }
+    if (c ? (black_kingside || black_queenside)
+          : (white_kingside || white_queenside)) {
         if ((c ? black_kingside : white_kingside)               //Check is kingside rook is captured
                  && is_kingside(move.to, board[move.to])) {
             (c ? black_kingside : white_kingside) = false;
