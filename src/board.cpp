@@ -52,12 +52,12 @@ piece_t Board::move_piece(int r1, int c1, int r2, int c2, Special_Move sm, piece
 piece_t Board::move_piece(const Move &m) {
     //std::cout << m.to_string() << "\n";
     int r1 = m.from.first, c1 = m.from.second, r2 = m.to.first, c2 = m.to.second;
-    if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
+    //if (!on_board(r1, c1)) return __;   //Initial pos is out of bounds
     piece_t p = board[r1][c1];          //Initial pos is on board
-    if (p == __) return p;              //Empty so exit
+    //if (p == __) return p;              //Empty so exit
     board[r1][c1] = __;
     bool col = get_color(p);
-    if (!on_board(r2, c2)) return p;    //Target pos is out of bounds
+    //if (!on_board(r2, c2)) return p;    //Target pos is out of bounds
 
     switch (m.sm) {
         case EN_PASSANT:
@@ -171,13 +171,14 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
     moves_t moves;
     bool capture;
     bool en_passant;
+    int r_move, c_move;
     diffs_t::iterator it;
     for (diffs_t move_list : moves_list) {
         capture = false;                                //reset capture flag
         en_passant = false;                             //reset en passant flag
         for (it = move_list.begin(); it != move_list.end(); it++) {
-            int r_move = r + (*it).first;
-            int c_move = c + (*it).second;
+            r_move = r + (*it).first;
+            c_move = c + (*it).second;
             if(on_board(r_move, c_move)) {
                 piece_t p2 = board[r_move][c_move];
                 if(p2 == __) {                          //piece is empty
@@ -298,23 +299,20 @@ bool Board::in_check(bool color, Pos &check_1, Pos &check_2) const {
     Pos p = get_king_pos(color);
     if (!on_board(p)) return false;
 
-    std::vector<piece_t> pieces;
-    if (color) pieces = {BQ, BR, BB, BN, BK, BP};
-    else pieces = {WQ, WR, WB, WN, WK, WP};
     int check = 0;
 
-    check += check_for_piece(p, {pieces[0], pieces[1]}, rook_moves, check_1);
+    check += check_for_piece(p, {pieces[!color][0], pieces[!color][1]}, rook_moves, check_1);   //White is true==1 but white index is [0]
 
-    check += check_for_piece(p, {pieces[0], pieces[2]}, bishop_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, {pieces[!color][0], pieces[!color][2]}, bishop_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[3]}, knight_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, {pieces[!color][3]}, knight_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[4]}, king_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, {pieces[!color][4]}, king_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[5]}, pawn_capture_moves[!color], check ? check_2 : check_1);    //White is true==1 but white index is [0]
+    check += check_for_piece(p, {pieces[!color][5]}, pawn_capture_moves[!color], check ? check_2 : check_1);
 
     return check;
 }

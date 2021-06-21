@@ -52,6 +52,7 @@ void Game::play_game() {
             continue;
         }
         make_move(m);
+        if (check) in_checkmate();
     }
     std::cout << "\n" << board.to_string();
     std::cout << "Game over.  " << (turn ? "Black" : "White") << " wins!\n";
@@ -63,13 +64,9 @@ void Game::make_move(Move &m) {
     game_moves.push_back(m);
     turn = !turn;
     check = board.in_check(turn, check_1, check_2);
-    if (check) {
-    //std::cout << "(" << check_1.first << ", " << check_1.second <<  ") / (" << check_2.first << ", " << check_2.second << ")\n";
-        in_checkmate();
-    }
 }
 
-Move Game::unmake_move() {
+void Game::unmake_move() {
     Move m = game_moves.back();
     game_moves.pop_back();
 
@@ -77,8 +74,6 @@ Move Game::unmake_move() {
     board.unmove_piece(m);
     turn = !turn;
     finished = false;
-
-    return m;
 }
 
 moves_t Game::get_all_moves() {
@@ -316,6 +311,7 @@ void Game::unhandle_special(Move &move) {
 
 int Game::perft(int depth) {
     if (depth <= 0) return 1;
+    if (depth <= 1) return get_all_moves().size();
     //std::cout << board.to_string();
 
     int num_moves = 0;

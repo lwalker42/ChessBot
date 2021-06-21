@@ -5,6 +5,7 @@
 
 #include "board.hpp"
 #include "move.hpp"
+#include "util.hpp"
 
 
 class Game {
@@ -23,7 +24,7 @@ class Game {
         void print_game();
         void play_game();
         void make_move(Move&);
-        Move unmake_move();
+        void unmake_move();
 
         bool valid_move(Move&);
         moves_t get_all_moves();
