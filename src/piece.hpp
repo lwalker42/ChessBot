@@ -13,12 +13,30 @@ enum piece_t {
 };
 
 char to_char(piece_t);
-bool is_empty(piece_t);
-bool get_color(piece_t);
-bool same_color(piece_t, piece_t);
-bool is_pawn(piece_t);
-bool is_king(piece_t);
-bool is_rook(piece_t);
+
+inline bool is_empty(piece_t p) {
+    return p == __;
+}
+
+inline bool get_color(piece_t p) {
+    return p > 0;
+}
+
+inline bool same_color(piece_t p1, piece_t p2) {
+    return (p1 != __) && (p2 != __) && ((p1 > 0) == (p2 > 0));  //Check if either are empty
+}
+
+inline bool is_pawn(piece_t p) {
+    return abs(p) == WP;
+}
+
+inline bool is_king(piece_t p) {
+    return abs(p) == WK;
+}
+
+inline bool is_rook(piece_t p) {
+    return abs(p) == WR;
+}
 
 
 #endif

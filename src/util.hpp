@@ -5,8 +5,12 @@
 #include "type_defs.hpp"
 #include "piece.hpp"
 
-bool on_board(int, int);
-bool on_board(Pos);
+inline bool on_board(int r, int c) {
+    return (0 <= r && r < BOARD_SIZE && 0 <= c && c < BOARD_SIZE);
+}
+inline bool on_board(Pos p) {
+    return (0 <= p.first && p.first < BOARD_SIZE && 0 <= p.second && p.second < BOARD_SIZE);
+}
 bool is_pawn_first(int, int, piece_t = WP);
 bool is_pawn_first(Pos, piece_t = WP);
 bool is_pawn_promotion(int, int, piece_t = WP);

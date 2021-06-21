@@ -324,7 +324,7 @@ int Game::perft(int depth) {
         num_moves += perft(depth-1);
         unmake_move();
     }
-    if (depth >= 3) {
+    if (depth >= 5) {
         std::cout << num_moves << " moves at depth " << depth << "\n";
         std::cout << board.to_string(); 
         std::cout << "\n\n";

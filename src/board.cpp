@@ -261,17 +261,22 @@ Pos Board::get_king_pos(bool color) const {
 
 //in_check helper
 bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists, Pos &check_pos) const {
-    for (diffs_t diffs : diffs_lists) {
-        for (Pos m : diffs) {
-            Pos new_pos(p+m);
-            if (!on_board(new_pos)) break;          //If off board, go to next move list
+    int r = 0;
+    int c = 0;
+    diffs_t::iterator it;
+    for (auto d_it = diffs_lists.begin(); d_it != diffs_lists.end(); d_it++) {
+        for (it = (*d_it).begin(); it != (*d_it).end(); it++) {
+            r = p.first + (*it).first;
+            c = p.second + (*it).second;
+            if (!on_board(r, c)) break;          //If off board, go to next move list
 
-            piece_t piece = (*this)[new_pos];
-            if (piece == __) continue;          //Space is empty so keep searching
+            //piece_t piece = board[r][c];
+            if (board[r][c] == __) continue;          //Space is empty so keep searching
 
             for (piece_t check_piece : pieces) {//There's a piece there; see if it's one we're looking for
-                if (piece == check_piece) {
-                    check_pos = (new_pos);
+                if (board[r][c] == check_piece) {
+                    check_pos.first = r;
+                    check_pos.second = c;
                     return true;
                 }
             }

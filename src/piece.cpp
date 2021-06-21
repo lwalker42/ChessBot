@@ -16,30 +16,6 @@ char to_char(piece_t p) {
     else return tolower(-p);
 }
 
-bool is_empty(piece_t p) {
-    return p == __;
-}
-
-bool get_color(piece_t p) {
-    return p > 0;
-}
-
-bool same_color(piece_t p1, piece_t p2) {
-    return (p1 != __) && (p2 != __) && ((p1 > 0) == (p2 > 0));  //Check if either are empty
-}
-
-bool is_pawn(piece_t p) {
-    return abs(p) == WP;
-}
-
-bool is_king(piece_t p) {
-    return abs(p) == WK;
-}
-
-bool is_rook(piece_t p) {
-    return abs(p) == WR;
-}
-
 diffs2_t get_piece_moves(piece_t p, Special_Move sm) {
     switch(abs(p)) {
         case WK:

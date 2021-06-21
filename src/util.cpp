@@ -3,13 +3,9 @@
 #include "type_defs.hpp"
 #include "piece.hpp"
 
-bool on_board(int r, int c) {
-    return (0 <= r && r < BOARD_SIZE && 0 <= c && c < BOARD_SIZE);
-}
 
-bool on_board(Pos p) {
-    return on_board(p.first, p.second);
-}
+
+
 
 bool is_pawn_first(int r, int c, piece_t p) {
     if (!is_pawn(p) || !on_board(r, c)) return false;
