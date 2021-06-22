@@ -10,8 +10,8 @@
 class Board {
     board_t board;
 
-    bool check_for_piece(Pos, std::vector<piece_t>, diffs2_t, Pos&) const;
-    bool check_for_piece(Pos, std::vector<piece_t>, diffs2_t) const;
+    bool check_for_piece(Pos, piece_t, diffs2_t, Pos&) const;
+    bool check_for_piece(Pos, piece_t, diffs2_t) const;
     
     public:
         Board();

@@ -7,8 +7,8 @@
 #include "move.hpp"
 #include "type_defs.hpp"
 
-const std::vector<piece_t> pieces[] = {{BQ, BR, BB, BN, BK, BP},
-                                       {WQ, WR, WB, WN, WK, WP}};
+const std::vector<piece_t> pieces[] = {{WQ, WR, WB, WN, WK, WP},
+                                       {BQ, BR, BB, BN, BK, BP}};
 
 
 const board_t init_board = {{{BR,BN,BB,BQ,BK,BB,BN,BR},

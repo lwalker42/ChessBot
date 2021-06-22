@@ -261,7 +261,7 @@ Pos Board::get_king_pos(bool color) const {
 }
 
 //in_check helper
-bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists, Pos &check_pos) const {
+bool Board::check_for_piece(Pos p, piece_t piece, diffs2_t diffs_lists, Pos &check_pos) const {
     int r = 0;
     int c = 0;
     diffs_t::iterator it;
@@ -274,12 +274,11 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_l
             //piece_t piece = board[r][c];
             if (board[r][c] == __) continue;          //Space is empty so keep searching
 
-            for (piece_t check_piece : pieces) {//There's a piece there; see if it's one we're looking for
-                if (board[r][c] == check_piece) {
-                    check_pos.first = r;
-                    check_pos.second = c;
-                    return true;
-                }
+            if (board[r][c] == piece    //There's a piece there; see if it's one we're looking for
+            || ((is_rook(piece) || is_bishop(piece)) && board[r][c] == pieces[!get_color(piece)][0]) ) { //or a queen (if looking at bishop or rook moves)
+                check_pos.first = r;
+                check_pos.second = c;
+                return true;
             }
             break;                              //There's a different piece there; go to next move list
         }
@@ -288,9 +287,9 @@ bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_l
 }
 
 
-bool Board::check_for_piece(Pos p, std::vector<piece_t> pieces, diffs2_t diffs_lists) const {
+bool Board::check_for_piece(Pos p, piece_t piece, diffs2_t diffs_lists) const {
     Pos check_pos(-1, -1);
-    return check_for_piece(p, pieces, diffs_lists, check_pos);
+    return check_for_piece(p, piece, diffs_lists, check_pos);
 }
 
 
@@ -301,18 +300,18 @@ bool Board::in_check(bool color, Pos &check_1, Pos &check_2) const {
 
     int check = 0;
 
-    check += check_for_piece(p, {pieces[!color][0], pieces[!color][1]}, rook_moves, check_1);   //White is true==1 but white index is [0]
-
-    check += check_for_piece(p, {pieces[!color][0], pieces[!color][2]}, bishop_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, pieces[color][1], rook_moves, check_1);     //White is true==1 but white index is [0]
+                                                                            //check for opposite color pieces
+    check += check_for_piece(p, pieces[color][2], bishop_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[!color][3]}, knight_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, pieces[color][3], knight_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[!color][4]}, king_moves, check ? check_2 : check_1);
+    check += check_for_piece(p, pieces[color][4], king_moves, check ? check_2 : check_1);
     if(check >= 2) return check;
 
-    check += check_for_piece(p, {pieces[!color][5]}, pawn_capture_moves[!color], check ? check_2 : check_1);
+    check += check_for_piece(p, pieces[color][5], pawn_capture_moves[!color], check ? check_2 : check_1);
 
     return check;
 }

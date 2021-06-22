@@ -38,5 +38,9 @@ inline bool is_rook(piece_t p) {
     return abs(p) == WR;
 }
 
+inline bool is_bishop(piece_t p) {
+    return abs(p) == WB;
+}
+
 
 #endif
