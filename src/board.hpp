@@ -10,14 +10,14 @@
 class Board {
     board_t board;
 
-    bool check_for_piece(Pos, piece_t, diffs2_t, Pos&) const;
-    bool check_for_piece(Pos, piece_t, diffs2_t) const;
+    bool check_for_piece(Pos&, const piece_t&, const diffs2_t&, Pos&) const;
+    bool check_for_piece(Pos&, const piece_t&, const diffs2_t&) const;
     
     public:
         Board();
         Board(board_t);
         Board(Board&);
-        piece_t operator[](Pos) const;
+        piece_t operator[](const Pos&) const;
         std::string to_string() const;
         board_t get_board() const;
         piece_t move_piece(int, int, int = -1, int = -1, Special_Move = NONE, piece_t = __, piece_t = __);  //deprecated

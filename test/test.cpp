@@ -9,6 +9,7 @@
 #include "../src/move.hpp"
 #include "../src/piece.hpp"
 #include "../src/game.hpp"
+#include "../src/test_boards.hpp"
 
 TEST_CASE("Test board bounds") {
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -115,6 +116,42 @@ TEST_CASE("Retrieving move lists") {
     CHECK(move::to_string(moves) == move::to_string(queen_moves));
 }
 
-TEST_CASE("Testing game object") {
-    Game game;
+TEST_CASE("Testing perft counts") {
+    Game game(init_board);
+    CHECK(game.perft(0) == 1);
+    CHECK(game.perft(1) == 20);
+    CHECK(game.perft(2) == 400);
+    CHECK(game.perft(3) == 8902);
+    CHECK(game.perft(4) == 197281);
+    CHECK(game.perft(5) == 4865609);
+
+    Game game2(board2);
+    CHECK(game2.perft(0) == 1);
+    CHECK(game2.perft(1) == 48);
+    CHECK(game2.perft(2) == 2039);
+    CHECK(game2.perft(3) == 97862);
+    CHECK(game2.perft(4) == 4085603);
+    
+    Game game3(board3, WHITE, false, false, false, false);
+    CHECK(game3.perft(0) == 1);
+    CHECK(game3.perft(1) == 14);
+    CHECK(game3.perft(2) == 191);
+    CHECK(game3.perft(3) == 2812);
+    CHECK(game3.perft(4) == 43238);
+    CHECK(game3.perft(5) == 674624);
+
+    Game game4(board4, WHITE, false, false, true, true);
+    CHECK(game4.perft(0) == 1);
+    CHECK(game4.perft(1) == 6);
+    CHECK(game4.perft(2) == 264);
+    CHECK(game4.perft(3) == 9467);
+    CHECK(game4.perft(4) == 422333);
+    CHECK(game4.perft(5) == 15833292);
+
+    Game game5(board5, WHITE, true, true, false, false);
+    CHECK(game5.perft(0) == 1);
+    CHECK(game5.perft(1) == 44);
+    CHECK(game5.perft(2) == 1486);
+    CHECK(game5.perft(3) == 62379);
+    CHECK(game5.perft(4) == 2103487);
 }

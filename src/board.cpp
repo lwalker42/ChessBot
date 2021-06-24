@@ -23,7 +23,7 @@ Board::Board(Board &b) {
     board = b.board;
 }
 
-piece_t Board::operator[](Pos p) const {
+piece_t Board::operator[](const Pos &p) const {
     return board[p.first][p.second];
 }
 
@@ -261,10 +261,10 @@ Pos Board::get_king_pos(bool color) const {
 }
 
 //in_check helper
-bool Board::check_for_piece(Pos p, piece_t piece, diffs2_t diffs_lists, Pos &check_pos) const {
+bool Board::check_for_piece(Pos &p, const piece_t &piece, const diffs2_t &diffs_lists, Pos &check_pos) const {
     int r = 0;
     int c = 0;
-    diffs_t::iterator it;
+    diffs_t::const_iterator it;
     for (auto d_it = diffs_lists.begin(); d_it != diffs_lists.end(); d_it++) {
         for (it = (*d_it).begin(); it != (*d_it).end(); it++) {
             r = p.first + (*it).first;
@@ -287,7 +287,7 @@ bool Board::check_for_piece(Pos p, piece_t piece, diffs2_t diffs_lists, Pos &che
 }
 
 
-bool Board::check_for_piece(Pos p, piece_t piece, diffs2_t diffs_lists) const {
+bool Board::check_for_piece(Pos &p, const piece_t &piece, const diffs2_t &diffs_lists) const {
     Pos check_pos(-1, -1);
     return check_for_piece(p, piece, diffs_lists, check_pos);
 }
