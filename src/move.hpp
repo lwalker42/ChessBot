@@ -16,6 +16,7 @@ class Move {
         int game_flags = 0;
         Move(Pos f, Pos t, Special_Move s = NONE, piece_t c = __, piece_t p = __) : from(f), to(t), sm(s), captured(c), promotion(p) {};
         Move(const Move &m) : from(m.from), to(m.to), sm(m.sm), captured(m.captured), promotion(m.promotion), game_flags(m.game_flags) {};
+        Move() : Move({-1, -1}, {-1, -1}) {};
         std::string to_string() const {
             return "From ("+std::to_string(from.first)+", "+std::to_string(from.second)+")"
                  + " to ("+std::to_string(to.first)+", "+std::to_string(to.second)+")"

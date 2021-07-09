@@ -1,27 +1,57 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
+#include <random>
+#include <chrono>
 
 #include "cpu.hpp"
 
-//awful way to read user input but want to test other parts
-Move CPU::get_move() {
-    std::string str;
-    std::cout << "Input your move: Inital_Row Initial_Col New_Row New_Col (no spaces)\n"; 
-    std::cin >> str;
-    if(str.length() > 0 && str[0] == 'U') return Move ({'U', -1}, {-1, -1});
-    if (str.length() > 2) {
-        Move m ({str[0] - 48, str[1] - 48}, {str[2]-48, str[3]-48});
-        if (str.length() > 4) {
-            m.promotion = (piece_t) str[4];
-            m.sm = PROMOTION;
+Move CPU::get_move(const Game &game) {
+    Game g(game);
+    Move best;
+    double eval = std::numeric_limits<double>::lowest();
+    double new_eval;
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine gen(seed);
+    std::normal_distribution<double> dist(0.0, 0.1);
+    
+    //std::cout << "Starting evals\n---------------\n";
+    for (Move &m : g.get_all_moves()) {
+        g.make_move(m);
+        new_eval = evaluate(g) + dist(gen);
+        //g.print_game();
+        //std::cout << "Eval is " << new_eval << "\n";
+        if (new_eval > eval) {
+            eval = new_eval;
+            best = m;
         }
-        return m;
-    } else {
-        return Move ({str[0] - 48, str[1] - 48}, {-1, -1});
+        g.unmake_move();
     }
+    //std::cout << "Done evals\n---------------\n";
+    return best;
 }
 
 void CPU::print_player_type() {
     std::cout << "CPU player\n";
+}
+
+double evaluate(const Game &game) {
+    board_t board = game.get_board();
+    double total = 0;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            total += evaluate_piece(board[i][j]);
+        }
+    }
+    return total * (!game.get_turn() ? 1 : -1);
+}
+
+double evaluate_piece(piece_t p) {
+    double color = get_color(p) ? 1.0 : -1.0;
+    if (is_pawn(p)) return P_VAL * color;
+    if (is_knight(p)) return N_VAL * color;
+    if (is_bishop(p)) return B_VAL * color;
+    if (is_rook(p)) return R_VAL * color;
+    if (is_queen(p)) return Q_VAL * color;
+    if (is_king(p)) return K_VAL * color;
+    return 0;
 }

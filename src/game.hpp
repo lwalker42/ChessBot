@@ -6,7 +6,6 @@
 #include "board.hpp"
 #include "move.hpp"
 #include "util.hpp"
-#include "player/player.hpp"
 
 
 class Game {
@@ -21,12 +20,14 @@ class Game {
         void unhandle_special(Move&);
 
     public:
-        Game(int = 1, int = 1, board_t = init_board, bool t = true, bool wk = true, bool wq = true, bool bk = true, bool bq = true);
+        Game(int = 0, int = 0, board_t = init_board, bool t = true, bool wk = true, bool wq = true, bool bk = true, bool bq = true);
         void print_game();
         void play_game();
         void make_move(Move&);
         void unmake_move();
 
+        board_t get_board() const;
+        bool get_turn() const;
         bool valid_move(Move&);
         moves_t get_all_moves();
         moves_t get_moves(int, int, piece_t, bool = false, bool = true);

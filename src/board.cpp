@@ -19,7 +19,7 @@ Board::Board(board_t b) {
     board = b;
 }
 
-Board::Board(Board &b) {
+Board::Board(const Board &b) {
     board = b.board;
 }
 

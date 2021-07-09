@@ -5,7 +5,7 @@
 #include "player.hpp"
 
 class Human : public Player {
-    Move get_move();
+    Move get_move(const Game &);
     void print_player_type();
 };
 

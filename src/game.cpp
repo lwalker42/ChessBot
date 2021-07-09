@@ -27,6 +27,13 @@ Game::Game(int w_type, int b_type, board_t b, bool t, bool wk, bool wq, bool bq,
     display = true;
 }
 
+board_t Game::get_board() const {
+    return board.get_board();
+}
+
+bool Game::get_turn() const {
+    return turn;
+}
 
 void Game::print_game() {
     std::cout << std::endl << board.to_string();
@@ -37,12 +44,11 @@ void Game::print_game() {
 void Game::play_game() {
     while(!finished) {
         if(display) print_game();
-        Player &p = player_types[turn ? white : black];
-        Move m = p.get_move();
+        Player *p = player_types[turn ? white : black];
+        Move m = p->get_move(*this);
         if (m.from.first == 'U' && game_moves.size() > 0) {
             unmake_move();
-            unmake_move();
-            std::cout << "Undoing moves...\n\n\n";
+            std::cout << "Undoing moves...\n";
             continue;
         }
         if (!valid_move(m)) {
@@ -130,7 +136,8 @@ bool Game::valid_move(Move &m) {
     moves_t moves = get_all_moves();
     //for (auto move : moves) std::cout << move.to_string() << "\n";
     auto it = std::find_if(moves.begin(), moves.end(), 
-                           [&m](Move move) -> bool {return m.to == move.to
+                           [&m](Move move) -> bool {return m.from == move.from
+                                                        && m.to == move.to
                                                         && (m.promotion == __ || m.promotion == abs(move.promotion));});  //Check if move is a valid move
     if (it == moves.end()) {
         return false;

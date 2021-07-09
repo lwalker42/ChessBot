@@ -16,7 +16,7 @@ class Board {
     public:
         Board();
         Board(board_t);
-        Board(Board&);
+        Board(const Board&);
         piece_t operator[](const Pos&) const;
         std::string to_string() const;
         board_t get_board() const;
