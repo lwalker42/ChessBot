@@ -6,7 +6,7 @@
 #include "piece.hpp"
 #include "game.hpp"
 #include "piece_util.hpp"
-#include "player.hpp"
+#include "player/player.hpp"
 #include "move.hpp"
 #include "board_constants.hpp"
 #include "timer.hpp"

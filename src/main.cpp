@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "game.hpp"
-#include "player.hpp"
+#include "player/player.hpp"
 #include "timer.hpp"
 #include "test_boards.hpp"
 

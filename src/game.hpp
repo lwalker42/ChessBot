@@ -6,7 +6,7 @@
 #include "board.hpp"
 #include "move.hpp"
 #include "util.hpp"
-#include "player.hpp"
+#include "player/player.hpp"
 
 
 class Game {

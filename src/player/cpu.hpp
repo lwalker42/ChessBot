@@ -1,6 +1,6 @@
 #pragma once
 
-#include "move.hpp"
+#include "../move.hpp"
 #include "player.hpp"
 
 class CPU : public Player {

@@ -2,7 +2,7 @@
 
 
 #include <vector>
-#include "move.hpp"
+#include "../move.hpp"
 
 #define HUMAN_PLAYER 0
 #define CPU_PLAYER 1

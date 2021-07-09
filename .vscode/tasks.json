@@ -11,6 +11,7 @@
           "-g",
           "-O3",
           "${workspaceFolder}/src/*.cpp",
+          "${workspaceFolder}/src/player/*.cpp",
           "-o",
           "${workspaceFolder}/bin/main",
         ],
