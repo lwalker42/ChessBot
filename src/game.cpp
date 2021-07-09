@@ -5,31 +5,26 @@
 #include "util.hpp"
 #include "piece.hpp"
 #include "game.hpp"
-#include "user_input.hpp"
+#include "piece_util.hpp"
+#include "player.hpp"
 #include "move.hpp"
 #include "board_constants.hpp"
 #include "timer.hpp"
 
-Game::Game() {
-    turn = WHITE;
-    check = false;
-    finished = false;
-    en_passant = false;
-    white_queenside = true;
-    white_kingside = true;
-    black_queenside = true;
-    black_kingside = true;
-    display = true;
-}
-
-Game::Game(board_t b, bool t, bool wk, bool wq, bool bq, bool bk) : Game() {
+Game::Game(int w_type, int b_type, board_t b, bool t, bool wk, bool wq, bool bq, bool bk) {
+    init_player_types();
+    white = w_type;
+    black = b_type;
     board = Board (b);
     turn = t;
+    check = board.in_check(turn, check_1, check_2);
+    finished = false;
+    en_passant = false;
     white_kingside = wk;
     white_queenside = wq;
     black_kingside = bk;
     black_queenside = bq;
-    check = board.in_check(turn, check_1, check_2);
+    display = true;
 }
 
 
@@ -42,9 +37,12 @@ void Game::print_game() {
 void Game::play_game() {
     while(!finished) {
         if(display) print_game();
-        Move m = turn ? get_input(CIN_INPUT) : get_input(CIN_INPUT);
+        Player &p = player_types[turn ? white : black];
+        Move m = p.get_move();
         if (m.from.first == 'U' && game_moves.size() > 0) {
             unmake_move();
+            unmake_move();
+            std::cout << "Undoing moves...\n\n\n";
             continue;
         }
         if (!valid_move(m)) {
@@ -82,12 +80,14 @@ moves_t Game::get_all_moves() {
     Pos king_pos = board.get_king_pos(turn);
     pos_t blocking = get_blocking(king_pos);
     blocking.push_back(king_pos);
+    piece_t p = __;
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            piece_t p = b[i][j];
+            p = b[i][j];
             if (is_empty(p)) continue;
             if (get_color(p) == turn) {
                 if (check) {
+                    if (on_board(check_2) && !is_king(p)) continue;
                     //TODO Check cases
                     /*if (!on_board(check_2)) {   //Only one piece is delivering check
                         moves_t captures = get_moves(i, j, p, true, true);
@@ -169,20 +169,19 @@ moves_t Game::get_moves(int r, int c, piece_t piece, bool capture_only, bool fil
     } else {
         moves = board.get_moves(r, c, capture_only ? CAPTURE_ONLY : NONE);
     }
-    return (filter || en_passant ? filter_check(moves) : moves);
+    return (filter || (en_passant && is_pawn(piece)) ? filter_check(moves) : moves);
 }
 
 moves_t Game::get_moves(Pos p, piece_t piece, bool capture_only, bool filter) {
     return get_moves(p.first, p.second, piece, capture_only, filter);
 }
 
-pos_t Game::get_blocking(Pos king) {
+pos_t Game:: get_blocking(Pos king) {
     pos_t blocking;
     for (diffs_t m_list : king_moves) {
         Pos m = m_list.front();
         Pos pos = king;
         Pos block = {-1 , -1};
-        int br = -1, bc = -1;
         while (true) {
             pos.first += m.first;
             pos.second += m.second;
@@ -194,7 +193,11 @@ pos_t Game::get_blocking(Pos king) {
                 block = pos;
                 continue;
             } else if (get_color(p) != turn && on_board(block)) {
-                blocking.push_back(block);
+                if (is_pawn(p) || is_knight(p) || is_king(p)) break;
+                else if ((m.first && m.second) && (is_bishop(p) || is_queen(p)))
+                    blocking.push_back(block);
+                else if ((m.first ^ m.second) && (is_rook(p) || is_queen(p)))
+                    blocking.push_back(block);
             }
             block = {-1, -1};
             break;

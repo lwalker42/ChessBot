@@ -6,11 +6,13 @@
 #include "board.hpp"
 #include "move.hpp"
 #include "util.hpp"
+#include "player.hpp"
 
 
 class Game {
     private:
         Board board;
+        int white, black;
         Pos en_passant_pos = {-1, -1}, check_1 = {-1, -1}, check_2 = {-1, -1};
         bool turn, check, white_kingside, white_queenside, black_kingside, black_queenside, finished, display, en_passant;
         std::vector<Move> game_moves;
@@ -19,8 +21,7 @@ class Game {
         void unhandle_special(Move&);
 
     public:
-        Game();
-        Game(board_t, bool t = true, bool wk = true, bool wq = true, bool bk = true, bool bq = true);
+        Game(int = 1, int = 1, board_t = init_board, bool t = true, bool wk = true, bool wq = true, bool bk = true, bool bq = true);
         void print_game();
         void play_game();
         void make_move(Move&);

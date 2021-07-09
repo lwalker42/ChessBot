@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "game.hpp"
+#include "player.hpp"
 #include "timer.hpp"
 #include "test_boards.hpp"
 
@@ -10,7 +11,7 @@ int main () {
     //Game game(board2);
     //Game game(board3, WHITE, false, false, false, false);
     //Game game(board4, WHITE, false, false, true, true);
-    Game game(board5, WHITE, true, true, false, false);
+    Game game(HUMAN_PLAYER, CPU_PLAYER, board5, WHITE, true, true, false, false);
     //game.play_game();
     ///*
     std::cout << "Depth to search to: ";

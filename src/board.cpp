@@ -212,7 +212,8 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
 
         if (sm == CAPTURE_ONLY || sm == EN_PASSANT
          || sm == KINGSIDE || sm == QUEENSIDE) {        //For getting only the last move in a list
-            Pos to = (*(std::prev(it)) + Pos(r, c));
+            Pos to ((*std::prev(it)).first + r, (*std::prev(it)).second + c);
+            //Pos to = (*(std::prev(it)) + Pos(r, c));
             if (en_passant) {
                 moves.push_back(Move ({r, c}, to, EN_PASSANT, (*this)[ep]));
             } else if (capture) {
@@ -223,7 +224,8 @@ moves_t Board::filter_moves_lists(int r, int c, diffs2_t moves_list, Special_Mov
             }
         } else {
             for (auto valid = move_list.begin(); valid != it; valid++) {
-                Pos to = *(valid) + Pos(r, c);
+                Pos to ((*valid).first + r, (*valid).second + c);
+                //Pos to = *(valid) + Pos(r, c);
                 if (sm == PAWN_STARTING && *(valid) == move_list.back()) {
                     moves.push_back(Move ({r, c}, to, PAWN_STARTING));      //For en passant handling
                 } else {
