@@ -4,29 +4,54 @@
 
 #include "cpu.hpp"
 
-Move CPU::get_move(const Game &game) {
-    Game g(game);
-    Move best;
-    double eval = std::numeric_limits<double>::lowest();
-    double new_eval;
+#define DEPTH 4
 
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine gen(seed);
-    std::normal_distribution<double> dist(0.0, 0.1);
-    
+unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+std::default_random_engine gen(seed);
+std::normal_distribution<double> dist(0.0, 0.05);
+
+Move CPU::get_move(const Game &game) {
     //std::cout << "Starting evals\n---------------\n";
+    Game g(game);
+    MoveEval m = evaluate_depth(g, DEPTH);
+    //std::cout << "Done evals\n---------------\n";
+    return m.move;
+}
+
+MoveEval evaluate_depth(Game &g, int depth) {
+    MoveEval best;
+    best.eval = std::numeric_limits<double>::lowest();
+    double new_eval;
+    auto moves = g.get_all_moves();
+    if (moves.size() > 0) best.move = moves.front();
+    else if (!g.get_check()) best.eval = 0.0;
     for (Move &m : g.get_all_moves()) {
         g.make_move(m);
-        new_eval = evaluate(g) + dist(gen);
-        //g.print_game();
-        //std::cout << "Eval is " << new_eval << "\n";
-        if (new_eval > eval) {
-            eval = new_eval;
-            best = m;
+        if (depth == 1) {
+            new_eval = evaluate(g) + dist(gen);
+            /*if (is_queen(g.get_board()[m.to.first][m.to.second])) {
+                g.print_game();
+                std::cout << "Eval is " << -new_eval << "\n";
+            }*/
+            if (-new_eval > best.eval) {    //This is called after a move is tried so it's the other person's turn (-eval)
+                best.eval = -new_eval;
+                best.move = m;
+            }
+        } else {
+            MoveEval next = evaluate_depth(g, depth-1);
+            /*if (next.eval <= -.1 || .1 <= next.eval) {
+                g.print_game();
+                std::cout << "Eval is " << -next.eval << "\n";
+            }*/
+            if (-next.eval > best.eval) {
+                best.eval = -next.eval;
+                best.move = m;
+            }
         }
+
         g.unmake_move();
     }
-    //std::cout << "Done evals\n---------------\n";
+    //std::cout << "\n\nEval at depth " << depth << " = " << best.eval << "\n\n\n";
     return best;
 }
 
@@ -42,7 +67,7 @@ double evaluate(const Game &game) {
             total += evaluate_piece(board[i][j]);
         }
     }
-    return total * (!game.get_turn() ? 1 : -1);
+    return total * (game.get_turn() ? 1 : -1); 
 }
 
 double evaluate_piece(piece_t p) {

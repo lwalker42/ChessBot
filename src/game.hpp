@@ -28,6 +28,7 @@ class Game {
 
         board_t get_board() const;
         bool get_turn() const;
+        bool get_check() const;
         bool valid_move(Move&);
         moves_t get_all_moves();
         moves_t get_moves(int, int, piece_t, bool = false, bool = true);

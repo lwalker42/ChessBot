@@ -10,14 +10,20 @@
 #define B_VAL 3.33
 #define R_VAL 5.63
 #define Q_VAL 9.5
-#define K_VAL 1E4
+#define K_VAL 0.0//1E4
+
+struct MoveEval {
+    Move move;
+    double eval;
+};
+
 
 class CPU : public Player {
     Move get_move(const Game &);
     void print_player_type();
 };
 
-Move evaluate_depth(Game &, int);
+MoveEval evaluate_depth(Game &, int);
 double evaluate_piece(piece_t);
 
 double evaluate(const Game &);

@@ -35,6 +35,10 @@ bool Game::get_turn() const {
     return turn;
 }
 
+bool Game::get_check() const {
+    return check;
+}
+
 void Game::print_game() {
     std::cout << std::endl << board.to_string();
     std::cout << (turn ? "White's turn\n" : "Black's turn\n");
@@ -252,6 +256,7 @@ bool Game::try_castle(bool color, Special_Move side) {
 
 bool Game::in_checkmate() {
     if (finished) return true;
+    if (!check) return false;
     board_t b = board.get_board();
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j <BOARD_SIZE; j++) {

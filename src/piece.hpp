@@ -43,7 +43,7 @@ inline bool is_bishop(piece_t p) {
 }
 
 inline bool is_knight(piece_t p) {
-    return abs(p) == WK;
+    return abs(p) == WN;
 }
 
 inline bool is_queen(piece_t p) {

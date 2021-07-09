@@ -15,7 +15,7 @@ Move Human::get_move(const Game &game) {
             m.promotion = (piece_t) toupper(str[4]);
             m.sm = PROMOTION;
         }
-        std::cout << "You entered move: " << m.to_string() << "\n";
+        //std::cout << "You entered move: " << m.to_string() << "\n";
         return m;
     } else {
         return Move ({str[0] - 48, str[1] - 48}, {-1, -1});
