@@ -13,6 +13,7 @@ std::normal_distribution<double> dist(0.0, 0.05);
 Move CPU::get_move(const Game &game) {
     //std::cout << "Starting evals\n---------------\n";
     Game g(game);
+    g.display = false;
     MoveEval m = evaluate_depth(g, DEPTH);
     //std::cout << "Done evals\n---------------\n";
     return m.move;

@@ -13,8 +13,10 @@
 
 Game::Game(int w_type, int b_type, board_t b, bool t, bool wk, bool wq, bool bq, bool bk) {
     init_player_types();
+    PGN = "";
     white = w_type;
     black = b_type;
+    ply_count = 0;
     board = Board (b);
     turn = t;
     check = board.in_check(turn, check_1, check_2);
@@ -64,14 +66,18 @@ void Game::play_game() {
     }
     std::cout << "\n" << board.to_string();
     std::cout << "Game over.  " << (turn ? "Black" : "White") << " wins!\n";
+    print_PGN();
 }
 
 void Game::make_move(Move &m) {
+    if (display) std::cout << add_to_PGN(m) << "\n";
     handle_special(m);
     board.move_piece(m);
     game_moves.push_back(m);
+    check = board.in_check(!turn, check_1, check_2);
+    ply_count++;
     turn = !turn;
-    check = board.in_check(turn, check_1, check_2);
+    if (display && check) PGN += "+";
 }
 
 void Game::unmake_move() {
@@ -81,6 +87,7 @@ void Game::unmake_move() {
     unhandle_special(m);
     board.unmove_piece(m);
     turn = !turn;
+    ply_count--;
     finished = false;
 }
 
@@ -268,6 +275,7 @@ bool Game::in_checkmate() {
         }
     }
     finished = true;
+    PGN.back() = '#';
     return true;
 }
 
@@ -342,4 +350,58 @@ int Game::perft(int depth) {
         std::cout << "\n\n";
     }
     return num_moves;
+}
+
+char to_file(int c) {
+    return (char) (c + 'a');
+}
+
+char to_rank(int r) {
+    return (char) ('8' - r);
+}
+
+std::string Game::add_to_PGN(Move &m) {
+    std::string str;
+
+    if (m.sm == KINGSIDE) return "O-O";
+    else if (m.sm == QUEENSIDE) return "O-O-O";
+    else {
+        piece_t p = board[m.from];
+        piece_t cap = m.captured;
+
+        moves_t all = get_all_moves();
+        all.erase(std::remove_if(all.begin(), all.end(), [m, p, this](Move &move) {return (p != board[move.from]) || (m.to != move.to) || (m.from == move.from);}), all.end());
+        
+        if (!is_pawn(p)) {
+            str += toupper(to_char(p));
+            if(all.size() > 0) {
+                std::cout << all.size() << "---------\n";
+                if (std::none_of(all.begin(), all.end(), [m](Move &move) {return m.to.second == move.to.second;})) {
+                    str += to_file(m.from.second);
+                } else if (std::none_of(all.begin(), all.end(), [m](Move &move) {return m.to.first == move.to.first;})) {
+                    str += to_rank(m.from.first);
+                } else {
+                    str += to_file(m.from.second);
+                    str += to_rank(m.from.first);
+                }
+            }
+        } else if (!is_empty(cap)) {
+            str += to_file(m.from.second);
+        }
+        if (!is_empty(cap)) str += "x";
+        str += to_file(m.to.second);
+        str += to_rank(m.to.first);
+        if (m.sm == PROMOTION) str += "=" + toupper(to_char(m.promotion));
+    }
+
+    if (turn) {
+        PGN += "\n" + std::to_string(ply_count/2 + 1) + ".";
+    }
+    PGN += " " + str;
+
+    return str;
+}
+        
+void Game::print_PGN() const {
+    std::cout << "\nPGN: \n" << PGN << "\n";
 }
