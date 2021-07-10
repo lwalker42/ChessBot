@@ -8,7 +8,8 @@
 
 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 std::default_random_engine gen(seed);
-std::normal_distribution<double> dist(0.0, 0.05);
+std::normal_distribution<double> dist(0.0, P_VAL/10);
+
 
 Move CPU::get_move(const Game &game) {
     //std::cout << "Starting evals\n---------------\n";
@@ -65,19 +66,42 @@ double evaluate(const Game &game) {
     double total = 0;
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            total += evaluate_piece(board[i][j]);
+            total += evaluate_piece(board[i][j], i, j);
         }
     }
     return total * (game.get_turn() ? 1 : -1); 
 }
 
-double evaluate_piece(piece_t p) {
-    double color = get_color(p) ? 1.0 : -1.0;
-    if (is_pawn(p)) return P_VAL * color;
-    if (is_knight(p)) return N_VAL * color;
-    if (is_bishop(p)) return B_VAL * color;
-    if (is_rook(p)) return R_VAL * color;
-    if (is_queen(p)) return Q_VAL * color;
-    if (is_king(p)) return K_VAL * color;
-    return 0;
+double evaluate_piece(piece_t p, int i, int j) {
+    double eval, weight;
+    if (get_color(p)) {
+        eval = 1.0;
+        weight = WEIGHT * board_weights[get_piece(p)][i][j];
+    } else {
+        eval = -1.0;
+        weight = -1 * WEIGHT * board_weights[get_piece(p)][BOARD_SIZE-1-i][BOARD_SIZE-1-j];
+    }
+    switch (get_piece(p)) {
+        case KING:
+            eval *= K_VAL;
+            break;
+        case QUEEN:
+            eval *= Q_VAL;
+            break;
+        case ROOK:
+            eval *= R_VAL;
+            break;
+        case BISHOP:
+            eval *= B_VAL;
+            break;
+        case KNIGHT:
+            eval *= N_VAL;
+            break;
+        case PAWN:
+            eval *= P_VAL;
+            break;
+        default:
+            return 0;
+    }
+    return eval + weight;
 }

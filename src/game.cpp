@@ -363,8 +363,8 @@ char to_rank(int r) {
 std::string Game::add_to_PGN(Move &m) {
     std::string str;
 
-    if (m.sm == KINGSIDE) return "O-O";
-    else if (m.sm == QUEENSIDE) return "O-O-O";
+    if (m.sm == KINGSIDE) str = "O-O";
+    else if (m.sm == QUEENSIDE) str = "O-O-O";
     else {
         piece_t p = board[m.from];
         piece_t cap = m.captured;
@@ -375,7 +375,6 @@ std::string Game::add_to_PGN(Move &m) {
         if (!is_pawn(p)) {
             str += toupper(to_char(p));
             if(all.size() > 0) {
-                std::cout << all.size() << "---------\n";
                 if (std::none_of(all.begin(), all.end(), [m](Move &move) {return m.to.second == move.to.second;})) {
                     str += to_file(m.from.second);
                 } else if (std::none_of(all.begin(), all.end(), [m](Move &move) {return m.to.first == move.to.first;})) {

@@ -11,24 +11,47 @@ using namespace std;
 
 //White > 0; Black < 0; empty == 0
 char to_char(piece_t p) {
-    if (p == __) return '-';
-    else if (p > 0) return p;
-    else return tolower(-p);
+    char c;
+    switch (get_piece(p)) {
+        case KING:
+            c = 'K';
+            break;
+        case QUEEN:
+            c = 'Q';
+            break;
+        case ROOK:
+            c = 'R';
+            break;
+        case BISHOP:
+            c = 'B';
+            break;
+        case KNIGHT:
+            c = 'N';
+            break;
+        case PAWN:
+            c = 'P';
+            break;
+        default:
+            c = '-';
+            break;
+    }
+    if (p & COLOR_MASK) return c;
+    else return tolower(c);
 }
 
 diffs2_t get_piece_moves(piece_t p, Special_Move sm) {
-    switch(abs(p)) {
-        case WK:
+    switch(get_piece(p)) {
+        case KING:
             return get_king_moves(p, sm);
-        case WQ:
+        case QUEEN:
             return queen_moves;
-        case WR:
+        case ROOK:
             return rook_moves;
-        case WB:
+        case BISHOP:
             return bishop_moves;
-        case WN:
+        case KNIGHT:
             return knight_moves;
-        case WP:
+        case PAWN:
             return get_pawn_moves(p, sm);
         default:
             return {};
@@ -37,7 +60,7 @@ diffs2_t get_piece_moves(piece_t p, Special_Move sm) {
 
 
 diffs2_t get_pawn_moves(piece_t p, Special_Move sm) {
-    int color = (p > 0) ? 0 : 1;
+    int color = get_color(p) ? 0 : 1;
     diffs2_t moves;
     switch (sm) {
     case PAWN_STARTING:
