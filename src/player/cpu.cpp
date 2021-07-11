@@ -15,41 +15,41 @@ Move CPU::get_move(const Game &game) {
     //std::cout << "Starting evals\n---------------\n";
     Game g(game);
     g.display = false;
-    MoveEval m = evaluate_depth(g, DEPTH);
+    int depth = DEPTH;
+    if (is_endgame(g)) depth += 2;
+    MoveEval m = evaluate_depth(g, depth, MIN-depth*P_VAL, MAX+depth*P_VAL);
     //std::cout << "Done evals\n---------------\n";
     return m.move;
 }
 
-MoveEval evaluate_depth(Game &g, int depth) {
+MoveEval evaluate_depth(Game &g, int depth, double alpha, double beta) {
+    //std::cout << "(" << alpha << ", " << beta << ")\n";
     MoveEval best;
-    best.eval = std::numeric_limits<double>::lowest();
+    best.eval = MIN-depth*P_VAL;
     double new_eval;
     auto moves = g.get_all_moves();
     if (moves.size() > 0) best.move = moves.front();
-    else if (!g.get_check()) best.eval = 0.0;
+    else if (!g.get_check()) best.eval = 0.0;       //If no legal moves and not in check, then stalemate
     for (Move &m : g.get_all_moves()) {
         g.make_move(m);
+
         if (depth == 1) {
-            new_eval = evaluate(g) + dist(gen);
-            /*if (is_queen(g.get_board()[m.to.first][m.to.second])) {
-                g.print_game();
-                std::cout << "Eval is " << -new_eval << "\n";
-            }*/
-            if (-new_eval > best.eval) {    //This is called after a move is tried so it's the other person's turn (-eval)
-                best.eval = -new_eval;
-                best.move = m;
-            }
+            new_eval = -(evaluate_board(g) + dist(gen));  //Evaluated from other player's pov so (-eval)
         } else {
-            MoveEval next = evaluate_depth(g, depth-1);
-            /*if (next.eval <= -.1 || .1 <= next.eval) {
-                g.print_game();
-                std::cout << "Eval is " << -next.eval << "\n";
-            }*/
-            if (-next.eval > best.eval) {
-                best.eval = -next.eval;
-                best.move = m;
-            }
+            int new_depth = depth;
+            if (!g.get_check()) new_depth--;
+            new_eval = -evaluate_depth(g, new_depth, -beta, -alpha).eval;
         }
+
+        if (new_eval > best.eval) {
+            best.eval = new_eval;
+            best.move = m;
+        }
+        if (best.eval >= beta) {
+            g.unmake_move();
+            break;
+        }
+        alpha = std::max(alpha, best.eval);
 
         g.unmake_move();
     }
@@ -61,7 +61,7 @@ void CPU::print_player_type() {
     std::cout << "CPU player\n";
 }
 
-double evaluate(const Game &game) {
+double evaluate_board(const Game &game) {
     board_t board = game.get_board();
     double total = 0;
     for (int i = 0; i < BOARD_SIZE; i++) {
@@ -104,4 +104,16 @@ double evaluate_piece(piece_t p, int i, int j) {
             return 0;
     }
     return eval + weight;
+}
+
+bool is_endgame(const Game &game) {
+    board_t board = game.get_board();
+    int blanks = 0;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if (is_empty(board[i][j])) blanks++;
+        }
+    }
+    return blanks > (64 - 8);
+
 }

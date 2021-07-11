@@ -12,6 +12,9 @@
 #define Q_VAL 950
 #define K_VAL 0.0//1E4
 
+#define MIN -10000//(std::numeric_limits<double>::lowest())
+#define MAX 10000//(std::numeric_limits<double>::max())
+
 #define WEIGHT 1
 
 struct MoveEval {
@@ -25,10 +28,12 @@ class CPU : public Player {
     void print_player_type();
 };
 
-MoveEval evaluate_depth(Game &, int);
+MoveEval evaluate_depth(Game &, int, double, double);
 double evaluate_piece(piece_t, int, int);
 
-double evaluate(const Game &);
+double evaluate_board(const Game &);
+
+bool is_endgame(const Game &);
 
 const double board_weights[][BOARD_SIZE][BOARD_SIZE] = {
                         //Filler

@@ -390,7 +390,10 @@ std::string Game::add_to_PGN(Move &m) {
         if (!is_empty(cap)) str += "x";
         str += to_file(m.to.second);
         str += to_rank(m.to.first);
-        if (m.sm == PROMOTION) str += "=" + toupper(to_char(m.promotion));
+        if (m.sm == PROMOTION) {
+            str += "=";
+            str += toupper(to_char(m.promotion));
+        }
     }
 
     if (turn) {
